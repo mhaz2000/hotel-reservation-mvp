@@ -117,9 +117,9 @@ export default function Home() {
       />
 
       {/* Search Panel */}
-      <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-6xl bg-white rounded-3xl shadow-lg p-6 flex flex-wrap justify-between gap-4">
+      <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-6xl bg-white rounded-3xl shadow-lg p-6 flex flex-wrap justify-between gap-3 lg:gap-0">
         {/* Destination */}
-        <div className="flex flex-col w-2/5">
+        <div className="flex flex-col w-full lg:w-1/2 xl:w-2/5">
           <div
             className={`relative flex items-center gap-3 border rounded-lg px-4 py-3 flex-grow ${locationError ? "border-red-500" : "border-gray-300"
               }`}
@@ -140,7 +140,7 @@ export default function Home() {
         </div>
 
         {/* Check-in */}
-        <div className="flex flex-col w-2/5">
+        <div className="flex flex-col w-full lg:w-1/2 lg:px-2 xl:w-2/5 xl:px-2">
           <div
             className={`flex items-center gap-3 border rounded-lg px-4 py-3 flex-grow min-w-[360px] ${datesError ? "border-red-500" : "border-gray-300"
               }`}
@@ -166,7 +166,7 @@ export default function Home() {
         <button
           disabled={loading}
           onClick={handleSearch}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl px-10 py-3 font-semibold flex items-center gap-3 whitespace-nowrap"
+          className="justify-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl px-10 py-3 font-semibold flex items-center gap-3 whitespace-nowrap w-full mt-3 mx-auto lg:w-1/5 xl:mt-0"
         >
           {!loading ?
             <Search className="w-6 h-6" /> :

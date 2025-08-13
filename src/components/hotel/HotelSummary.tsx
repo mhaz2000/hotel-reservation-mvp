@@ -44,7 +44,7 @@ export default function HotelSummaryHeader() {
     const sidePics = pictures.slice(1, 5);
 
     return (
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
 
             {/* Right side - big picture */}
             <div className="col-span-1">

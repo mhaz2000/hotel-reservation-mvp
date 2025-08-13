@@ -53,14 +53,14 @@ export default function HotelPage() {
             <div className="col-span-3">
                 <HotelSummaryHeader />
             </div>
-            <div className="col-span-2">
+            <div className="col-span-3 lg:col-span-2">
                 <HotelRoomSelection
                     onIncrementRoom={handleIncrementRoom}
                     onDecrementRoom={handleDecrementRoom}
                     selectedRooms={selectedRooms}
                 />
             </div>
-            <div>
+            <div className="col-span-3 lg:col-span-1">
                 <Basket
                     selectedRooms={selectedRooms}
                     onRemoveRoom={(index) =>

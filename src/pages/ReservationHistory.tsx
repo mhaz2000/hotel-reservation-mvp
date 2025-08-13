@@ -105,13 +105,13 @@ export default function ReservationHistory() {
                 const nights = Math.max(Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)), 0);
 
                 return (
-                    <div key={idx} className="border rounded p-6 shadow space-y-4">
+                    <div key={idx} className="border rounded p-4 lg:p-6 shadow space-y-4 flex flex-col lg:flex-col">
                         {/* Hotel info */}
                         {hotelSummary ? (
-                            <div className="flex flex-row items-center justify-between mb-4 gap-1">
-                                <div className="text-right flex-1 pr-4 space-y-1">
+                            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                                <div className="w-full lg:flex-1 space-y-2 text-right">
                                     <h2 className="text-xl font-bold">{hotelSummary.ModalHotelGallery.HotelName}</h2>
-                                    <div className="flex items-center justify-start gap-1">
+                                    <div className="flex items-center gap-1 justify-start lg:justify-start">
                                         {Array.from({ length: hotelSummary.HotelHeader.Star.GradeId }).map((_, i) => (
                                             <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                                         ))}
@@ -119,30 +119,28 @@ export default function ReservationHistory() {
                                     <p className="text-gray-600">{hotelSummary.HotelHeader.Address.Address}</p>
 
                                     {/* Reservation dates */}
-                                    <div className=" text-gray-700 flex flex-col justify-between max-w-md">
-                                        <div className="flex gap-4">
-                                            <div className="flex flex-row items-center gap-1">
-                                                <p className="text-green-600">تاریخ ورود:</p>
-                                                <p className="font-bold">{toPersianDigits(reservation.bookingData.startDate)}</p>
-                                            </div>
-                                            <div className="flex flex-row items-center gap-1">
-                                                <p className="text-red-600">تاریخ خروج:</p>
-                                                <p className="font-bold">{toPersianDigits(reservation.bookingData.endDate)}</p>
-                                            </div>
+                                    <div className="flex flex-col lg:flex-row gap-2 text-gray-700 mt-2">
+                                        <div className="flex gap-1 items-center">
+                                            <p className="text-green-600">تاریخ ورود:</p>
+                                            <p className="font-bold">{toPersianDigits(reservation.bookingData.startDate)}</p>
                                         </div>
-                                        <div className="flex flex-row items-center">
-                                            <p className="pl-1">مدت اقامت:</p>
+                                        <div className="flex gap-1 items-center">
+                                            <p className="text-red-600">تاریخ خروج:</p>
+                                            <p className="font-bold">{toPersianDigits(reservation.bookingData.endDate)}</p>
+                                        </div>
+                                        <div className="flex gap-1 items-center">
+                                            <p>مدت اقامت:</p>
                                             <p className="text-blue-600">{toPersianDigits(nights)} شب</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="flex-shrink-0 w-36 h-36 rounded overflow-hidden">
+                                <div className="w-full lg:w-36 h-48 lg:h-36 rounded overflow-hidden flex-shrink-0">
                                     {hotelSummary.ModalHotelGallery.Pictures[0] ? (
                                         <img
                                             src={hotelSummary.ModalHotelGallery.Pictures[0].Jpg}
                                             alt={hotelSummary.ModalHotelGallery.Pictures[0].Alt}
-                                            className="object-cover w-full h-full"
+                                            className="w-full h-full object-cover"
                                         />
                                     ) : (
                                         <div className="bg-gray-200 w-full h-full" />
@@ -159,45 +157,41 @@ export default function ReservationHistory() {
                             {reservation.bookingData.rooms.length === 0 ? (
                                 <p className="text-right">هیچ اتاقی رزرو نشده است.</p>
                             ) : (
-                                <>
-                                    <ul className="space-y-3">
-                                        {reservation.bookingData.rooms.map((room, i) => (
-                                            <li key={i} className="flex items-center gap-3">
-                                                <img
-                                                    src={room.image ?? defaultRoom}
-                                                    alt={room.name}
-                                                    className="w-16 h-12 object-cover rounded"
-                                                />
-                                                <div>
-                                                    <p className="font-medium text-right">
-                                                        {toPersianDigits(room.name)} × {toPersianDigits(room.quantity)}
-                                                    </p>
-                                                    <p className="text-sm text-gray-500">
-                                                        {(room.price * room.quantity).toLocaleString("fa-IR")} تومان
-                                                    </p>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                <ul className="space-y-3">
+                                    {reservation.bookingData.rooms.map((room, i) => (
+                                        <li key={i} className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                                            <img
+                                                src={room.image ?? defaultRoom}
+                                                alt={room.name}
+                                                className="w-full sm:w-16 h-24 sm:h-12 object-cover rounded flex-shrink-0"
+                                            />
+                                            <div className="flex-1 text-right">
+                                                <p className="font-medium">
+                                                    {toPersianDigits(room.name)} × {toPersianDigits(room.quantity)}
+                                                </p>
+                                                <p className="text-sm text-gray-500">
+                                                    {(room.price * room.quantity).toLocaleString("fa-IR")} تومان
+                                                </p>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
 
-                                    {/* Total amount */}
-                                    <hr className="my-4" />
-                                    <p className="font-bold text-lg text-right">
-                                        مجموع:{" "}
-                                        {toPersianDigits(
-                                            reservation.bookingData.rooms.reduce(
-                                                (sum, room) => sum + room.price * room.quantity,
-                                                0
-                                            ).toLocaleString("fa-IR")
-                                        )}{" "}
-                                        تومان
-                                    </p>
-                                </>
+                            {/* Total amount */}
+                            {reservation.bookingData.rooms.length > 0 && (
+                                <p className="font-bold text-lg text-right mt-4">
+                                    مجموع:{" "}
+                                    {toPersianDigits(
+                                        reservation.bookingData.rooms.reduce((sum, room) => sum + room.price * room.quantity, 0).toLocaleString("fa-IR")
+                                    )}{" "}
+                                    تومان
+                                </p>
                             )}
                         </div>
 
                         {/* Customer info */}
-                        <div className="text-right">
+                        <div className="text-right mt-2">
                             <h3 className="font-semibold mb-2">اطلاعات رزرو کننده</h3>
                             <p>نام: {reservation.customerInfo.firstName}</p>
                             <p>نام خانوادگی: {reservation.customerInfo.lastName}</p>
@@ -209,6 +203,7 @@ export default function ReservationHistory() {
                             </p>
                         </div>
                     </div>
+
                 );
             })}
         </div>

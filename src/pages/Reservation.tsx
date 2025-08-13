@@ -130,9 +130,9 @@ export default function ReservationPage() {
     return <p className="text-center text-red-500">اطلاعات رزرو موجود نیست.</p>;
 
   return (
-    <div className="container mx-auto px-4 py-6 flex gap-8">
+    <div className="container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-8">
       {/* Left side: Hotel info + rooms */}
-      <div className="w-1/3 space-y-6 sticky top-20 self-start">
+      <div className="w-full lg:w-1/3 space-y-6 top-20 self-start">
         {/* Hotel info */}
         {hotelSummary ? (
           <>
@@ -247,7 +247,7 @@ export default function ReservationPage() {
       </div>
 
       {/* Right side: Form */}
-      <div className="w-2/3 border rounded p-6 shadow">
+      <div className="w-full lg:w-2/3 border rounded p-6 shadow">
         <h2 className="text-xl font-bold mb-6 text-right">اطلاعات رزرو کننده</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
