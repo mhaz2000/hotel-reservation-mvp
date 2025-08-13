@@ -30,7 +30,7 @@ export default function JalaliRangePicker({ onPick }: JalaliRangePickerProps) {
       calendarPosition="bottom-right"
       className="border rounded-lg p-2 w-full"
       placeholder="تاریخ ورود - تاریخ خروج"
-      inputClass="text-gray-700 placeholder-gray-400 outline-none"
+      inputClass="text-gray-700 placeholder-gray-400 outline-none w-full"
       range
       sort
       minDate={today} // disable past dates

@@ -142,7 +142,7 @@ export default function Home() {
         {/* Check-in */}
         <div className="flex flex-col w-full lg:w-1/2 lg:px-2 xl:w-2/5 xl:px-2">
           <div
-            className={`flex items-center gap-3 border rounded-lg px-4 py-3 flex-grow min-w-[360px] ${datesError ? "border-red-500" : "border-gray-300"
+            className={`flex items-center gap-3 border rounded-lg px-4 py-3 flex-grow ${datesError ? "border-red-500" : "border-gray-300"
               }`}
           >
             <Calendar className="text-gray-500 w-6 h-6" />
