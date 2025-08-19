@@ -6,7 +6,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import type { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_en from "react-date-object/locales/persian_en";
-import type { HotelSelectLocaion, Card } from "../types/hotel";
+import type { Hotel, HotelSelectLocaion } from "../types/hotel";
 import { getHotels } from "../api/hotel";
 import HotelSearchResults from "../components/hotel/HotelSearchResults";
 
@@ -16,7 +16,7 @@ export default function Home() {
   const [locationError, setLocationError] = useState(false);
   const [datesError, setDatesError] = useState(false);
 
-  const [hotels, setHotels] = useState<Card[]>([]);
+  const [hotels, setHotels] = useState<Hotel[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -41,15 +41,15 @@ export default function Home() {
           endDate,
           pageIndex,
           location.cityId,
-          location.country
+          location.stateId
         );
 
         setHotels((prev) =>
-          reset ? data.Cards : [...prev, ...data.Cards]
+          reset ? data.data : [...prev, ...data.data]
         );
 
         // If less than page size returned, means no more data
-        if (data.Cards.length < 10) {
+        if (data.data.length < 10) {
           setHasMore(false);
         }
       } catch (err) {
@@ -102,7 +102,6 @@ export default function Home() {
 
   // Fetch on page change (for infinite scroll)
   useEffect(() => {
-    debugger
     if (page > 1) {
       fetchHotels(page);
     }

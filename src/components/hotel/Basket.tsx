@@ -1,22 +1,21 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toPersianDigits } from "../../utils/persianDigits";
+import type { InBasketRoom } from "../../types/hotelDetail";
 
 interface BasketProps {
-    selectedRooms: any[];
+    selectedRooms: InBasketRoom[];
     onRemoveRoom: (index: number) => void;
 }
 
 export default function Basket({ selectedRooms, onRemoveRoom }: BasketProps) {
     const [searchParams] = useSearchParams();
-    const cityName = searchParams.get("cityName");
-    const hotelName = searchParams.get("hotelName");
     const startDate = searchParams.get("startDate");
     const endDate = searchParams.get("endDate");
+    const hotelId = searchParams.get("hotelId");
     const navigate = useNavigate();
 
-
     const total = selectedRooms.reduce(
-        (sum, r) => sum + r.info.roomPrice.price.ihoPrice * r.quantity,
+        (sum, r) => sum + r.room.prices[0].nights[0].ihoPrice * r.quantity,
         0
     );
 
@@ -30,14 +29,13 @@ export default function Basket({ selectedRooms, onRemoveRoom }: BasketProps) {
             localStorage.setItem("bookingData", JSON.stringify({
                 rooms: selectedRooms.map(s => ({
                     quantity: s.quantity,
-                    image: s.container.mainPicture?.jpg,
-                    name: s.container.name,
-                    price: s.container.roomInfos[0].roomPrice.price.ihoPrice,
+                    image: s.room.gallery[0].pictureUrl,
+                    name: s.room.name,
+                    price: s.room.prices[0].nights[0].ihoPrice,
                 })),
                 startDate,
                 endDate,
-                cityName: cityName,
-                hotelName: hotelName
+                hotelId,
             }));
             navigate('/hotel/reservation')
         } catch (error) {
@@ -58,11 +56,11 @@ export default function Basket({ selectedRooms, onRemoveRoom }: BasketProps) {
                             <li key={i} className="flex justify-between items-center">
                                 <div>
                                     <p className="font-medium">
-                                        {toPersianDigits(room.container.name)} ×{" "}
+                                        {toPersianDigits(room.room.name)} ×{" "}
                                         {toPersianDigits(room.quantity)}
                                     </p>
                                     <p className="text-sm text-gray-500">
-                                        {(room.info.roomPrice.price.ihoPrice * room.quantity).toLocaleString("fa-IR")} تومان
+                                        {(room.room.prices[0].nights[0].ihoPrice * room.quantity).toLocaleString("fa-IR")} تومان
                                     </p>
                                 </div>
                                 <button

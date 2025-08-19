@@ -1,28 +1,34 @@
-import type { HotelResponse, LocationOrHotel } from "../types/hotel";
-import type { HtoelRoomDetial } from "../types/hotelDetail";
+import type { HotelResponse } from "../types/hotel";
+import type { HotelRoom } from "../types/hotelDetail";
 import type { HotelSummary } from "../types/hotelSummary";
-import anonymousAxios from "./anonymousAxios";
+import type { FlatLocation} from "../types/states";
+import { authorizedAxios } from "./anonymousAxios";
 
-export const getSuggestion = async (search: string): Promise<LocationOrHotel[]> => {
-    const { data } = await anonymousAxios.get<LocationOrHotel[]>(`mvc/hotelInfo/suggest?query=${search}&take=20`);
-    return data;
+
+export const getStatesAndCities = async (search: string): Promise<FlatLocation[]> => {
+  const { data } = await authorizedAxios.get<FlatLocation[]>(`Locations?search=${search}`);
+  return data;
 };
 
 
-export const getHotels = async (startDate: string, endDate: string, pageIndex: number, cityId: number, country: string): Promise<HotelResponse> => {
-    if (cityId && cityId !== 0)
-        country = ''
-    const { data } = await anonymousAxios.get<HotelResponse>(`mvc/v1/search/filter?CityId=${cityId}&ReferUrl=home&StartDate=${startDate}&EndDate=${endDate}&CountryName=${country}&PageIndex=${pageIndex}&PageSize=10`);
-    return data;
+export const getHotels = async (startDate: string, endDate: string, pageIndex: number, cityId: number, stateId: number): Promise<HotelResponse> => {
+  const { data } = await authorizedAxios.post<HotelResponse>('Hotels', {
+    startDate,
+    endDate,
+    cityId,
+    stateId,
+    pageIndex
+  });
+  return data;
 }
 
 
-export const getHotelRooms = async (startDate: string, endDate: string, hotelId: number): Promise<HtoelRoomDetial> => {
-    const { data } = await anonymousAxios.post<HtoelRoomDetial>(`mvc/v1/hotelInfo/hotelRooms`, { startDate, endDate, hotelId });
-    return data;
+export const getHotelRooms = async (startDate: string, endDate: string, hotelId: number): Promise<HotelRoom[]> => {
+  const { data } = await authorizedAxios.get<HotelRoom[]>(`Hotels/${hotelId}/GetRooms?startDate=${startDate}&endDate=${endDate}`);
+  return data;
 }
 
-export const getHotelSummary = async (cityName: string, hotelName: string): Promise<HotelSummary> => {
-    const { data } = await anonymousAxios.get<HotelSummary>(`mvc/v1/hotelInfo/getHotelSummaryInfo?cityName=${cityName}&hotelName=${hotelName}`);
-    return data;
+export const getHotelSummary = async (startDate: string, endDate: string, hotelId: number): Promise<HotelSummary> => {
+  const { data } = await authorizedAxios.get<HotelSummary>(`Hotels/${hotelId}?startDate=${startDate}&endDate=${endDate}`);
+  return data;
 }

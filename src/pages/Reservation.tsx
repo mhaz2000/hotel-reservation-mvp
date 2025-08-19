@@ -25,8 +25,7 @@ interface RoomBooking {
 
 interface BookingData {
   rooms: RoomBooking[];
-  cityName: string | null;
-  hotelName: string | null;
+  hotelId: number;
   startDate: string;
   endDate: string;
 }
@@ -72,9 +71,9 @@ export default function ReservationPage() {
       const parsed: BookingData = JSON.parse(stored);
       setBookingData(parsed);
 
-      if (parsed.cityName && parsed.hotelName) {
+      if (parsed.startDate && parsed.endDate && parsed.hotelId) {
         try {
-          const data = await getHotelSummary(parsed.cityName, parsed.hotelName);
+          const data = await getHotelSummary(parsed.startDate, parsed.endDate, parsed.hotelId);
           setHotelSummary(data);
         } catch (e) {
           console.error("خطا در دریافت اطلاعات هتل:", e);
@@ -139,24 +138,24 @@ export default function ReservationPage() {
             <div className="flex items-center justify-between mb-4 gap-1">
               {/* Right side: title, stars, address */}
               <div className="text-right flex-1 pr-4 space-y-1">
-                <h2 className="text-xl font-bold">{hotelSummary.ModalHotelGallery.HotelName}</h2>
+                <h2 className="text-xl font-bold">{hotelSummary.fullName}</h2>
                 <div className="flex items-center justify-start gap-1">
                   {/* Render stars based on GradeId */}
                   <div className="flex items-center justify-end gap-1">
-                    {Array.from({ length: hotelSummary.HotelHeader.Star.GradeId }).map((_, i) => (
+                    {Array.from({ length: Number(hotelSummary.gradeName) }).map((_, i) => (
                       <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                     ))}
                   </div>
                 </div>
-                <p className="text-gray-600">{hotelSummary.HotelHeader.Address.Address}</p>
+                <p className="text-gray-600">{hotelSummary.address}</p>
               </div>
 
               {/* Left side: hotel image */}
               <div className="flex-shrink-0 w-28 h-36 rounded overflow-hidden">
-                {hotelSummary.ModalHotelGallery.Pictures[0] ? (
+                {hotelSummary.gallery[0] ? (
                   <img
-                    src={hotelSummary.ModalHotelGallery.Pictures[0].Jpg}
-                    alt={hotelSummary.ModalHotelGallery.Pictures[0].Alt}
+                    src={hotelSummary.gallery[0].pictureUrl}
+                    alt={hotelSummary.gallery[0].title}
                     className="object-cover w-full h-full"
                   />
                 ) : (

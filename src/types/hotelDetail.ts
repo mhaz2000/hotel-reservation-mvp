@@ -1,70 +1,68 @@
-export interface HtoelRoomDetial {
-    room: Room
+
+export interface InBasketRoom {
+  quantity: number
+  room: HotelRoom
 }
 
-export interface Room {
-    roomContainer: RoomContainer[]
+export interface HotelRoom {
+  availability: Availability[]
+  gallery: Gallery[]
+  id: number
+  name: string
+  extraCapacity: number
+  adultCapacity: number
+  adultCapacityDescription: string
+  infantCapacity: number
+  infantCapacityDescription: string
+  description: string
+  roomSize: string
+  bedSize: string
+  facilities: Facility[]
+  prices: Price[]
+  hasEnter: boolean
+  hasExit: boolean
 }
 
-export interface RoomContainer {
-    id: number
-    isHourly: boolean
-    name: string
-    foreignName: any
-    packageId: any
-    roomInfos: RoomInfo[]
-    mainPicture?: MainPicture
+export interface Availability {
+  currentDate: string
+  full: boolean
+  blocked: boolean
+  hasNoEnter: boolean
+  hasNoExit: boolean
+  closed: boolean
+  isPackage: boolean
+  freeCapacity: number
+  roomId: number
 }
 
-export interface MainPicture {
-    alt: string
-    jpg: string
-    webp: string
-    lazy: boolean
-    thumbnailUrl: string
+export interface Gallery {
+  title?: string
+  pictureUrl: string
 }
 
-export interface RoomInfo {
-    noPrice: boolean
-    letMeKnow: boolean
-    roomCollapseViewId: string
-    reservable: boolean
-    bestRoomClass: string
-    lastRoomLeft: boolean
-    canReserveByTour: boolean
-    roomCapacity: RoomCapacity
-    roomPrice: RoomPrice
-    roomDetail: RoomDetail
-    roomInfoFacility: any
-}
-
-export interface RoomDetail {
-    nonRefundable: boolean
-    breakfast: boolean
-    lunch: boolean
-    dinner: boolean
-    foodText: any
-}
-
-export interface RoomCapacity {
-    adultCapacity: number
-    infantCapacity: number
-    extraCapacity: number
-    extraCapacityPrice: number
-    extraCapacityText: string
-    hotelPolicyChildDescription: string
-}
-
-export interface RoomPrice {
-    discount: number
-    price: Price
+export interface Facility {
+  title: string
+  description: string
 }
 
 export interface Price {
-    startingText: string
-    oldPrice: boolean
-    boardPrice: number
-    ihoPrice: number
-    nights: number
-    averageIhoPrice: number
+  nights: Night[]
+  promotions: any[]
+  nonRefundable: boolean
+}
+
+export interface Night {
+  currentDate: string
+  boardPrice: number
+  boardPriceEn: number
+  ihoPrice: number
+  rawIhoPrice: number
+  ihoPriceEn: number
+  minSalePrice: number
+  commissionPrice: number
+  extraBoardPrice: number
+  extraIhoPrice: number
+  breakFast: boolean
+  lunch: boolean
+  dinner: boolean
 }
