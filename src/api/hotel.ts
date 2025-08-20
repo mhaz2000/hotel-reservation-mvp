@@ -1,6 +1,7 @@
 import type { HotelResponse } from "../types/hotel";
 import type { HotelRoom } from "../types/hotelDetail";
 import type { HotelSummary } from "../types/hotelSummary";
+import type { Nation } from "../types/nations";
 import type { FlatLocation} from "../types/states";
 import { authorizedAxios } from "./anonymousAxios";
 
@@ -10,6 +11,10 @@ export const getStatesAndCities = async (search: string): Promise<FlatLocation[]
   return data;
 };
 
+export const getNations = async (): Promise<Nation[]> => {
+  const { data } = await authorizedAxios.get<Nation[]>(`Nations`);
+  return data;
+};
 
 export const getHotels = async (startDate: string, endDate: string, pageIndex: number, cityId: number, stateId: number): Promise<HotelResponse> => {
   const { data } = await authorizedAxios.post<HotelResponse>('Hotels', {
@@ -21,7 +26,6 @@ export const getHotels = async (startDate: string, endDate: string, pageIndex: n
   });
   return data;
 }
-
 
 export const getHotelRooms = async (startDate: string, endDate: string, hotelId: number): Promise<HotelRoom[]> => {
   const { data } = await authorizedAxios.get<HotelRoom[]>(`Hotels/${hotelId}/GetRooms?startDate=${startDate}&endDate=${endDate}`);

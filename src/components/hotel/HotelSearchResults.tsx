@@ -76,7 +76,7 @@ export default function HotelSearchResults({ hotels, startDate, endDate }: Searc
                                 <p className="text-lg font-bold text-gray-900">
                                     {hotel.ihoPrice.toLocaleString("fa-IR")}
                                 </p>
-                                <p className="text-sm text-gray-500">تومان</p>
+                                <p className="text-sm text-gray-500">ریال</p>
                             </div>
 
                             <button

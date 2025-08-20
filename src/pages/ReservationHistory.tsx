@@ -170,7 +170,7 @@ export default function ReservationHistory() {
                                                     {toPersianDigits(room.name)} × {toPersianDigits(room.quantity)}
                                                 </p>
                                                 <p className="text-sm text-gray-500">
-                                                    {(room.price * room.quantity).toLocaleString("fa-IR")} تومان
+                                                    {(room.price * room.quantity).toLocaleString("fa-IR")} ریال
                                                 </p>
                                             </div>
                                         </li>
@@ -185,7 +185,7 @@ export default function ReservationHistory() {
                                     {toPersianDigits(
                                         reservation.bookingData.rooms.reduce((sum, room) => sum + room.price * room.quantity, 0).toLocaleString("fa-IR")
                                     )}{" "}
-                                    تومان
+                                    ریال
                                 </p>
                             )}
                         </div>

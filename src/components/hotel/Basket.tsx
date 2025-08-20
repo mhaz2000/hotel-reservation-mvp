@@ -60,7 +60,7 @@ export default function Basket({ selectedRooms, onRemoveRoom }: BasketProps) {
                                         {toPersianDigits(room.quantity)}
                                     </p>
                                     <p className="text-sm text-gray-500">
-                                        {(room.room.prices[0].nights[0].ihoPrice * room.quantity).toLocaleString("fa-IR")} تومان
+                                        {(room.room.prices[0].nights[0].ihoPrice * room.quantity).toLocaleString("fa-IR")} ریال
                                     </p>
                                 </div>
                                 <button
@@ -74,7 +74,7 @@ export default function Basket({ selectedRooms, onRemoveRoom }: BasketProps) {
                     </ul>
                     <hr className="my-4" />
                     <p className="font-bold text-lg">
-                        مجموع: {total.toLocaleString("fa-IR")} تومان
+                        مجموع: {total.toLocaleString("fa-IR")} ریال
                     </p>
                     <button
                         className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full"

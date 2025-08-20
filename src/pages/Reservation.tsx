@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { getHotelSummary } from "../api/hotel";
 import { toPersianDigits } from "../utils/persianDigits";
 import type { HotelSummary } from "../types/hotelSummary";
@@ -9,6 +6,8 @@ import defaultRoom from "../assets/defaul-room.jpg";
 import { Star } from "lucide-react";
 import * as shamsi from "shamsi-date-converter";
 import { useNavigate } from "react-router-dom";
+import ReserveForm from "../components/hotel/ReserveForm";
+import type { CustomerBookingInfo } from "../types/CustomerBookingData";
 
 function convertShamsiToGregorian(shamsiDate: any) {
   const [jy, jm, jd] = shamsiDate.split("/").map(Number);
@@ -30,35 +29,13 @@ interface BookingData {
   endDate: string;
 }
 
-// Zod schema for validation
-const formSchema = z.object({
-  firstName: z.string().min(1, "نام را وارد کنید"),
-  lastName: z.string().min(1, "نام خانوادگی را وارد کنید"),
-  mobile: z
-    .string()
-    .min(10, "شماره موبایل باید حداقل 10 رقم باشد")
-    .max(11, "شماره موبایل باید حداکثر 11 رقم باشد")
-    .regex(/^\d{10,11}$/, "فرمت شماره موبایل معتبر نیست"),
-  phone: z.string().optional(),
-  email: z.string().email("ایمیل معتبر نیست"),
-});
 
-type FormData = z.infer<typeof formSchema>;
 
 export default function ReservationPage() {
   const [bookingData, setBookingData] = useState<BookingData | null>(null);
   const [hotelSummary, setHotelSummary] = useState<HotelSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate()
-
-  // react-hook-form setup with Zod resolver
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-  });
 
   useEffect(() => {
     async function fetchData() {
@@ -86,7 +63,7 @@ export default function ReservationPage() {
     fetchData();
   }, []);
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: CustomerBookingInfo) => {
     if (!bookingData) {
       alert("اطلاعات رزرو موجود نیست.");
       return;
@@ -224,7 +201,7 @@ export default function ReservationPage() {
                         {toPersianDigits(room.name)} × {toPersianDigits(room.quantity)}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {(room.price * room.quantity).toLocaleString("fa-IR")} تومان
+                        {(room.price * room.quantity).toLocaleString("fa-IR")} ریال
                       </p>
                     </div>
                   </li>
@@ -238,7 +215,7 @@ export default function ReservationPage() {
                 {toPersianDigits(
                   bookingData.rooms.reduce((sum, room) => sum + room.price * room.quantity, 0).toLocaleString("fa-IR")
                 )}{" "}
-                تومان
+                ریال
               </p>
             </>
           )}
@@ -246,99 +223,8 @@ export default function ReservationPage() {
       </div>
 
       {/* Right side: Form */}
-      <div className="w-full lg:w-2/3 border rounded p-6 shadow">
-        <h2 className="text-xl font-bold mb-6 text-right">اطلاعات رزرو کننده</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="firstName" className="block mb-1 text-right">
-                نام
-              </label>
-              <input
-                id="firstName"
-                {...register("firstName")}
-                className={`w-full border rounded px-3 py-2 ${errors.firstName ? "border-red-500" : ""
-                  }`}
-              />
-              {errors.firstName && (
-                <p className="text-red-500 mt-1 text-sm">{errors.firstName.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="lastName" className="block mb-1 text-right">
-                نام خانوادگی
-              </label>
-              <input
-                id="lastName"
-                {...register("lastName")}
-                className={`w-full border rounded px-3 py-2 ${errors.lastName ? "border-red-500" : ""
-                  }`}
-              />
-              {errors.lastName && (
-                <p className="text-red-500 mt-1 text-sm">{errors.lastName.message}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="mobile" className="block mb-1 text-right">
-                شماره موبایل
-              </label>
-              <input
-                id="mobile"
-                {...register("mobile")}
-                type="tel"
-                className={`w-full border rounded px-3 py-2 ${errors.mobile ? "border-red-500" : ""
-                  }`}
-              />
-              {errors.mobile && (
-                <p className="text-red-500 mt-1 text-sm">{errors.mobile.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="phone" className="block mb-1 text-right">
-                شماره تلفن
-              </label>
-              <input
-                id="phone"
-                {...register("phone")}
-                type="tel"
-                className={`w-full border rounded px-3 py-2 ${errors.phone ? "border-red-500" : ""
-                  }`}
-              />
-              {errors.phone && (
-                <p className="text-red-500 mt-1 text-sm">{errors.phone.message}</p>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="email" className="block mb-1 text-right">
-              ایمیل
-            </label>
-            <input
-              id="email"
-              {...register("email")}
-              type="email"
-              className={`w-full border rounded px-3 py-2 ${errors.email ? "border-red-500" : ""
-                }`}
-            />
-            {errors.email && (
-              <p className="text-red-500 mt-1 text-sm">{errors.email.message}</p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            ارسال اطلاعات
-          </button>
-        </form>
+      <div className="w-full lg:w-2/3 ">
+          <ReserveForm onSubmit={onSubmit} price={bookingData.rooms.reduce((sum, room) => sum + room.price * room.quantity, 0)} />
       </div>
     </div>
   );

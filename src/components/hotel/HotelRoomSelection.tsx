@@ -119,11 +119,11 @@ export default function HotelRoomSelection({
                             <div className="flex flex-col md:items-end justify-between text-right mt-2 md:mt-0">
                                 <div className="flex flex-row-reverse gap-2 mb-2">
                                     <p className="text-sm line-through">
-                                        {room.prices[0].nights[0].boardPrice.toLocaleString("fa-IR")} تومان
+                                        {room.prices[0].nights[0].boardPrice.toLocaleString("fa-IR")} ریال
                                     </p>
                                 </div>
                                 <div className="flex flex-row-reverse items-center gap-1">
-                                    <p className="text-xs text-gray-500 mt-1">تومان</p>
+                                    <p className="text-xs text-gray-500 mt-1">ریال</p>
                                     <p className="text-xl font-bold text-black">
                                         {room.prices[0].nights[0].ihoPrice.toLocaleString("fa-IR")}
                                     </p>
