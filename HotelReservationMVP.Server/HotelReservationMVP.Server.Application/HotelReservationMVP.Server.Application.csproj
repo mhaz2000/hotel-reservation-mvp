@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.19" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.8" />
+    <PackageReference Include="NReco.PdfGenerator" Version="1.2.1" />
   </ItemGroup>
 
   <ItemGroup>

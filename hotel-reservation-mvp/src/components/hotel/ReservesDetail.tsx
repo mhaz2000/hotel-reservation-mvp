@@ -7,7 +7,7 @@ import { CountdownTimer } from "../ui/CountdownTimer";
 import { ReservationStatusBadge } from "./ReservationStatusBadge";
 import { Dialog } from "../ui/Dialog";
 import { useState } from "react";
-import { finalizeBook } from "../../api/hotel";
+import { downloadVoucher, finalizeBook } from "../../api/hotel";
 
 interface ReservesDetailProps {
     reservations: ReservationHistory[];
@@ -184,12 +184,21 @@ export default function ReservesDetail({ reservations, onPaid }: ReservesDetailP
 
                                 {reservation.status === "Reserved" && (
                                     <>
-                                        {/* download button */}
                                         <button
                                             className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow"
-                                            onClick={() => {
-                                                setIsDialogOpen(true)
-                                                setReservationToPay(reservation)
+                                            onClick={async () => {
+                                                try {
+                                                    const voucherBlob = await downloadVoucher(reservation.reserveId);
+                                                    const url = window.URL.createObjectURL(new Blob([voucherBlob]));
+                                                    const link = document.createElement("a");
+                                                    link.href = url;
+                                                    link.setAttribute("download", "voucher.pdf");
+                                                    document.body.appendChild(link);
+                                                    link.click();
+                                                    link.parentNode?.removeChild(link);
+                                                } catch (error) {
+                                                    console.error("Error downloading voucher:", error);
+                                                }
                                             }}
                                         >
                                             دانلود واچر

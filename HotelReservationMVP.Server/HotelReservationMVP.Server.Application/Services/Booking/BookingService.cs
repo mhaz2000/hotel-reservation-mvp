@@ -1,6 +1,7 @@
 ﻿using HotelReservationMVP.Server.Application.Commands;
 using HotelReservationMVP.Server.Application.DTOs;
 using HotelReservationMVP.Server.Application.Extensions;
+using HotelReservationMVP.Server.Application.Services.Voucher;
 using HotelReservationMVP.Server.Core.Consts;
 using HotelReservationMVP.Server.Core.Entities;
 using HotelReservationMVP.Server.Core.ExternalServices;
@@ -8,18 +9,26 @@ using HotelReservationMVP.Server.Core.Models;
 using HotelReservationMVP.Server.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace HotelReservationMVP.Server.Application.Services.Booking
 {
     public class BookingService : IBookingService
     {
         private readonly IExternalApiClient _externalApiClient;
         private readonly IReservationRepository _repository;
+        private readonly IVoucherService _voucherService;
 
-        public BookingService(IExternalApiClient externalApiClient, IReservationRepository repository)
+        public BookingService(IExternalApiClient externalApiClient, IReservationRepository repository, IVoucherService voucherService)
         {
             _externalApiClient = externalApiClient;
             _repository = repository;
+            _voucherService = voucherService;
+        }
+
+        public async Task<MemoryStream> DownloadVoucherAsync(ulong reserveId)
+        {
+            var reservation = await _repository.GetAsync(c => c.ReserveId == reserveId, c=> c.Include(t=>t.Rooms));
+
+            return _voucherService.GetVoucher(reservation);
         }
 
         public async Task<FinalizeBookModel> FinalizeBookAsync(ulong reserveId)

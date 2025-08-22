@@ -6,6 +6,7 @@ namespace HotelReservationMVP.Server.Application.Services.Booking
 {
     public interface IBookingService
     {
+        Task<MemoryStream> DownloadVoucherAsync(ulong reserveId);
         Task<FinalizeBookModel> FinalizeBookAsync(ulong reserveId);
         Task<IEnumerable<ReservesHistoryDto>> GetReservesHistoryAsync(string type, string mobile);
         Task<PreReserveModel> PreReserveAsync(PreReserveCommand command);

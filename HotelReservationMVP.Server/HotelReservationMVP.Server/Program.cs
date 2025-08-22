@@ -2,6 +2,7 @@ using HotelReservationMVP.Server.Application.Services.Booking;
 using HotelReservationMVP.Server.Application.Services.Hotels;
 using HotelReservationMVP.Server.Application.Services.Locations;
 using HotelReservationMVP.Server.Application.Services.Nations;
+using HotelReservationMVP.Server.Application.Services.Voucher;
 using HotelReservationMVP.Server.Core.ExternalServices;
 using HotelReservationMVP.Server.Core.Repositories;
 using HotelReservationMVP.Server.Infrastructure.Data;
@@ -23,7 +24,8 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddHttpClient<IExternalApiClient, ExternalApiClient>(client =>
 {
-    client.BaseAddress = new Uri("https://www.iranhotelonline.com/api/app/v1/"); // your base
+    client.BaseAddress = new Uri(builder.Configuration["IranHotelURL"]!); // your base
+    //client.BaseAddress = new Uri("https://www.iranhotelonline.com/api/app/v1/"); // your base
     //client.BaseAddress = new Uri("http://194.41.51.43/api/app/v1/"); // your base
     client.Timeout = TimeSpan.FromSeconds(30);
 });
@@ -32,6 +34,7 @@ builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<INationService, NationService>();
+builder.Services.AddScoped<IVoucherService, VoucherService>();
 
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 

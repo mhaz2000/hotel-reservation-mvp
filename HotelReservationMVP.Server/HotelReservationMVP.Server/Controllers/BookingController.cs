@@ -56,5 +56,12 @@ namespace HotelReservationMVP.Server.API.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet("DownloadVoucher/{reserveId}")]
+        public async Task<IActionResult> Print([FromRoute] ulong reserveId)
+        {
+            var voucherFile = await _bookingService.DownloadVoucherAsync(reserveId);
+            return File(voucherFile, "application/octet-stream", fileDownloadName: "voucher.pdf");
+        }
     }
 }

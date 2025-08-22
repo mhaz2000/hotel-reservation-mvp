@@ -19,4 +19,13 @@
     <ProjectReference Include="..\HotelReservationMVP.Server.Infrastructure\HotelReservationMVP.Server.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="statics\IranHotelLogo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="statics\sign.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

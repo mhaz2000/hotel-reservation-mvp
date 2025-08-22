@@ -60,3 +60,10 @@ export const finalizeBook = async (reserveId: string): Promise<FinalizeBookRespo
   const { data } = await authorizedAxios.post<FinalizeBookResponse>(`Booking/FinalizeBook/${reserveId}`);
   return data;
 }
+
+export const downloadVoucher = async (reserveId: string | number): Promise<Blob> => {
+  const response = await authorizedAxios.get<Blob>(`Booking/DownloadVoucher/${reserveId}`, {
+    responseType: "blob", // important to get the file as a blob
+  });
+  return response.data;
+};
