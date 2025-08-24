@@ -65,8 +65,7 @@ namespace HotelReservationMVP.Server.Application.Services.Booking
             {
                 var result = await reservations
                     .Where(t => t.Status == ReservationStatus.WaitingForHotelApproval ||
-                                t.Status == ReservationStatus.WaitingForPayment ||
-                                t.Status == ReservationStatus.WaitingList)
+                                t.Status == ReservationStatus.WaitingForPayment)
                     .ToListAsync();
 
                 // Fire off all API calls in parallel
@@ -147,12 +146,7 @@ namespace HotelReservationMVP.Server.Application.Services.Booking
 
             var result = await _externalApiClient.PreReserveAsync(input);
 
-            if (result.StatusText == "در انتظار پاسخ هتل")
-                reservation.Status = ReservationStatus.WaitingForHotelApproval;
-            else if (result.StatusText == "در انتظار واریز وجه")
-                reservation.Status = ReservationStatus.WaitingForPayment;
-            else
-                reservation.Status = ReservationStatus.Reject;
+            reservation.Status = MapToReservationStatus(result.StatusText);
 
             reservation.ReserveId = result.ReserveId;
 
@@ -162,17 +156,31 @@ namespace HotelReservationMVP.Server.Application.Services.Booking
 
         private ReservationStatus MapToReservationStatus(string status)
         {
+            var waitingForHotelApprovalStatuses = new List<string>()
+            {
+                "در انتظار تایید فیش",
+                "بررسی در زمانی دیگر",
+                "در انتظار پاسخ هتل",
+                "پاسخ مثبت",
+                "منتظر بمانيد",
+                "در دست بررسي",
+                "در دست بررسی",
+                "اولین روز کاری",
+                "تماس بگيريد",
+                "کنترل در زمان دیگر",
+                "لیست انتظار",
+                "در انتظار بررسی کارشناس"
+            };
+
+
             if (status == "رزرو قطعی")
                 return ReservationStatus.Reserved;
 
             if (status == "در انتظار واریز وجه")
                 return ReservationStatus.WaitingForPayment;
 
-            if (status == "در انتظار بررسی کارشناس")
+            if (waitingForHotelApprovalStatuses.Contains(status))
                 return ReservationStatus.WaitingForHotelApproval;
-
-            if (status == "لیست انتظار")
-                return ReservationStatus.WaitingList;
 
             return ReservationStatus.Reject;
         }

@@ -8,8 +8,6 @@ namespace HotelReservationMVP.Server.Core.Consts
         WaitingForHotelApproval,
         [Description("در انتظار پرداخت")]
         WaitingForPayment,
-        [Description("لیست انتظار")]
-        WaitingList,
         [Description("رزرو ناموفق")]
         Reject,
         [Description("رزرو قطعی")]
