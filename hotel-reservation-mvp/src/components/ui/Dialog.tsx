@@ -61,7 +61,7 @@ export function Dialog({
                         {cancelText}
                     </button>
                     <button
-                        disabled={additionalMessage?.isSuccess || true}
+                        disabled={additionalMessage?.isSuccess}
                         onClick={onConfirm}
                         className={`px-4 py-2 rounded-md border border-gray-300 bg-green-600 text-white hover:text-green-600 hover:bg-white transition ${destructive
                             ? "bg-red-600 hover:bg-red-700"

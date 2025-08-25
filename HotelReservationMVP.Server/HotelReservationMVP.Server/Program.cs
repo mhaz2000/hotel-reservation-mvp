@@ -1,7 +1,9 @@
+using HotelReservationMVP.Server.Application.Providers;
 using HotelReservationMVP.Server.Application.Services.Booking;
 using HotelReservationMVP.Server.Application.Services.Hotels;
 using HotelReservationMVP.Server.Application.Services.Locations;
 using HotelReservationMVP.Server.Application.Services.Nations;
+using HotelReservationMVP.Server.Application.Services.Payments;
 using HotelReservationMVP.Server.Application.Services.Voucher;
 using HotelReservationMVP.Server.Core.ExternalServices;
 using HotelReservationMVP.Server.Core.Repositories;
@@ -35,8 +37,11 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<INationService, NationService>();
 builder.Services.AddScoped<IVoucherService, VoucherService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IAsanPardakhtService, AsanPardakhtService>();
 
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 builder.Services.AddCors(options =>
 {

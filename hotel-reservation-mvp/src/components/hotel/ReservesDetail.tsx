@@ -7,7 +7,8 @@ import { CountdownTimer } from "../ui/CountdownTimer";
 import { ReservationStatusBadge } from "./ReservationStatusBadge";
 import { Dialog } from "../ui/Dialog";
 import { useState } from "react";
-import { downloadVoucher, finalizeBook } from "../../api/hotel";
+import { downloadVoucher } from "../../api/hotel";
+import { requestPayment } from "../../api/payment";
 
 interface ReservesDetailProps {
     reservations: ReservationHistory[];
@@ -20,7 +21,7 @@ function convertShamsiToGregorian(shamsiDate: any) {
     return new Date(gy, gm - 1, gd);
 }
 
-export default function ReservesDetail({ reservations, onPaid }: ReservesDetailProps) {
+export default function ReservesDetail({ reservations }: ReservesDetailProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [reservationToPay, setReservationToPay] = useState<ReservationHistory | null>(null);
     const [paymentMessage, setPaymentMessage] = useState<{ message: string, isSuccess: boolean } | null>(null)
@@ -30,17 +31,9 @@ export default function ReservesDetail({ reservations, onPaid }: ReservesDetailP
 
         try {
             // Call the API
-            await finalizeBook(reservationToPay.reserveId.toString());
+            var url = await requestPayment(reservationToPay.reserveId.toString());
 
-            // Set success message
-            setPaymentMessage({ isSuccess: true, message: "عملیات موفق" });
-
-            // Wait 3 seconds before closing dialog
-            setTimeout(() => {
-                setIsDialogOpen(false);
-                setPaymentMessage(null);
-                if (onPaid) onPaid();
-            }, 3000);
+            window.location.href = url;
         } catch (error: any) {
             // Handle error and set message
             const message =

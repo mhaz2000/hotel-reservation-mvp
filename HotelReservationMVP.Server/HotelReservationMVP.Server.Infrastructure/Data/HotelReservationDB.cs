@@ -8,6 +8,7 @@ namespace HotelReservationMVP.Server.Infrastructure.Data
         public HotelReservationDbContext(DbContextOptions<HotelReservationDbContext> options) : base(options) { }
 
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
         public DbSet<ReservingRoom> Rooms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
