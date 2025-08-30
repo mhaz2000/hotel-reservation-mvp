@@ -1,3 +1,4 @@
+using HotelReservationMVP.Server.API.Middlewares;
 using HotelReservationMVP.Server.Application.Providers;
 using HotelReservationMVP.Server.Application.Services.Booking;
 using HotelReservationMVP.Server.Application.Services.Hotels;
@@ -65,6 +66,8 @@ using (var scope = app.Services.CreateScope())
 app.UseCors("AllowAll");
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 

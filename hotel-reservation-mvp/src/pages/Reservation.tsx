@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import ReserveForm from "../components/hotel/ReserveForm";
 import type { CustomerBookingInfo } from "../types/CustomerBookingData";
 import type { BookingData } from "../types/reservation";
+import { toast } from "react-toastify";
 
 function convertShamsiToGregorian(shamsiDate: any) {
   const [jy, jm, jd] = shamsiDate.split("/").map(Number);
@@ -67,7 +68,9 @@ export default function ReservationPage() {
 
       // navigate after success
       navigate('/reservation-history');
-    } catch (error) {
+    } catch (error: any) {
+      debugger
+      toast.error(error.response.data.message)
       console.error("❌ Failed to pre-reserve:", error);
       // optionally show toast or error UI here
     }

@@ -2,6 +2,7 @@
 
 public class VerifyRequest
 {
-    public string RefId { get; set; }
-    public long LocalInvoiceId { get; set; }
+    public long payGateTranId { get; set; }
+    public long merchantConfigurationId { get; set; }
 }
+    

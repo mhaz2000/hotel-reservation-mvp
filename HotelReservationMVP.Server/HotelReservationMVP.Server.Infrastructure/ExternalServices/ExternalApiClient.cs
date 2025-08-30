@@ -70,11 +70,16 @@ public class ExternalApiClient : IExternalApiClient
 
         // Post request
         var response = await _httpClient.PostAsync("booking/Reserve", content);
-
-        response.EnsureSuccessStatusCode();
-
-        // Read and deserialize response
         var responseJson = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            if (responseJson == "Book_Hourly_Room_Is_Illegal_For_More_Than_One_Day")
+                throw new ApplicationException("رزروِ اتاق ساعتی، برای بیش از یک روز امکان پذیر نیست.");
+
+            throw new ApplicationException(responseJson);
+        }
+        // Read and deserialize response
         var preReserve = JsonSerializer.Deserialize<PreReserveModel>(responseJson, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
@@ -131,7 +136,7 @@ public class ExternalApiClient : IExternalApiClient
     public async Task<FinalizeBookModel> FinalizeBookAsync(ulong reserveId)
     {
         var response = await _httpClient.PostAsync($"payment/Book/{reserveId}", null);
-        if(response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
             return await response.Content.ReadFromJsonAsync<FinalizeBookModel>();
 
         var error = await response.Content.ReadFromJsonAsync<ApiError>();

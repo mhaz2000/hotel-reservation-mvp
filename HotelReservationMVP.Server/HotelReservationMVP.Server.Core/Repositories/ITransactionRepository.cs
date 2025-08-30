@@ -2,5 +2,8 @@
 
 namespace HotelReservationMVP.Server.Core.Repositories
 {
-    public interface ITransactionRepository : IRepository<Transaction>;
+    public interface ITransactionRepository : IRepository<Transaction>
+    {
+        Task<long> GetLastLocalIdAsync();
+    }
 }

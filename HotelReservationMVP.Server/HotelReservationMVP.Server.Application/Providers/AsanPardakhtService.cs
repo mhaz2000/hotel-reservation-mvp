@@ -11,15 +11,19 @@ namespace HotelReservationMVP.Server.Application.Providers
         private readonly HttpClient _client;
         private readonly string _merchantId;
         private readonly string _password;
+        private readonly string _merchantConfigId;
+        private readonly string _username;
 
         private readonly string _callbackUrl;
 
         public AsanPardakhtService(IConfiguration config)
         {
-            //var baseUrl = config["AsanPardakht:RestUrl"]!;
-            var baseUrl = "http://194.41.51.43:81/";
+            var baseUrl = config["AsanPardakht:RestUrl"]!;
+            //var baseUrl = "http://194.41.51.43:81/";
             _merchantId = config["AsanPardakht:MerchantId"]!;
+            _username = config["AsanPardakht:Username"]!;
             _password = config["AsanPardakht:Password"]!;
+            _merchantConfigId = config["AsanPardakht:MerchantConfigId"]!;
             _callbackUrl = config["AsanPardakht:CallbackUrl"]!;
 
             _client = new HttpClient
@@ -28,14 +32,14 @@ namespace HotelReservationMVP.Server.Application.Providers
                 Timeout = TimeSpan.FromSeconds(20)
             };
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _client.DefaultRequestHeaders.Add("usr", _merchantId);
+            _client.DefaultRequestHeaders.Add("usr", _username);
             _client.DefaultRequestHeaders.Add("pwd", _password);
         }
 
         public async Task<TokenResponse> GetTokenAsync(TokenRequest request)
         {
             request.callbackURL = _callbackUrl;
-            request.merchantConfigurationId = int.Parse(_merchantId);
+            request.merchantConfigurationId = int.Parse(_merchantConfigId);
 
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             var response = await _client.PostAsync("v1/Token", content);
@@ -53,6 +57,8 @@ namespace HotelReservationMVP.Server.Application.Providers
 
         public async Task<VerifyResponse> VerifyAsync(VerifyRequest request)
         {
+            request.merchantConfigurationId = int.Parse(_merchantConfigId);
+
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             var response = await _client.PostAsync("v1/Verify", content);
 

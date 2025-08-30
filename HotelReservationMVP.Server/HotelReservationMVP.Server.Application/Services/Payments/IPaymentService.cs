@@ -1,5 +1,6 @@
 ﻿using HotelReservationMVP.Server.Application.Providers;
 using HotelReservationMVP.Server.Application.Providers.Models;
+using HotelReservationMVP.Server.Core.Consts;
 using HotelReservationMVP.Server.Core.Entities;
 using HotelReservationMVP.Server.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -20,37 +21,65 @@ namespace HotelReservationMVP.Server.Application.Services.Payments
         }
         public async Task<string?> RequestPaymentAsync(ulong reserveId)
         {
-            var reservation = await _reservationRepository.GetAsync(c => c.ReserveId == reserveId, include: c=> c.Include(t=> t.Rooms));
+            var reservation = await _reservationRepository.GetAsync(c => c.ReserveId == reserveId, include: c => c.Include(t => t.Rooms));
             var roomsPrice = reservation.Rooms.Sum(r => r.RoomPrice);
+
+            var lastId = await _transactionRepository.GetLastLocalIdAsync();
+            var transaction = new Transaction()
+            {
+                Price = roomsPrice,
+                ReserveId = reserveId,
+                Status = TransactionStatus.Pending,
+                LocalId = lastId
+            };
 
             var tokenRequest = new TokenRequest
             {
                 amountInRials = (ulong)roomsPrice,
-                localInvoiceId = (long)reservation.ReserveId,
-                paymentId = reservation.Id.ToString()
+                localInvoiceId = lastId,
             };
 
             var result = await _asanPardakhtService.GetTokenAsync(tokenRequest);
 
-            if(result.ResCode ==0)
+            string redirectUrl = null;
+
+            if (result.ResCode == 0)
             {
-                await _transactionRepository.AddAsync(new Transaction()
-                {
-                    Price = roomsPrice,
-                    ReserveId = reserveId,
-                    RefId = result.RefId
-                });
-
-                return $"https://asan.shaparak.ir?RefId={result.RefId}";
-
+                transaction.RefId = result.RefId;
+                redirectUrl = $"https://asan.shaparak.ir?RefId={result.RefId}";
+            }
+            else
+            {
+                transaction.Status = TransactionStatus.Failed;
             }
 
+            await _transactionRepository.AddAsync(transaction);
 
-            return null;
+            return redirectUrl;
+        }
+
+        public async Task<string> VerifyAsync(long payGateTranId, string refId)
+        {
+            var transaction = await _transactionRepository.GetAsync(c => c.RefId == refId);
+
+            var verifyCommand = new VerifyRequest
+            {
+                payGateTranId = payGateTranId
+            };
+            var verifyResult = await _asanPardakhtService.VerifyAsync(verifyCommand);
+
+            transaction.Status = TransactionStatus.PaidVerfied;
+            await _transactionRepository.UpdateAsync(transaction);
+
+            // (3) Redirect browser to frontend
+            var redirectUrl = $"https://site.ir/payment-result?status={(verifyResult.ResCode == 0 ? "success" : "failed")}&invoice={""}";
+
+            return redirectUrl;
         }
     }
     public interface IPaymentService
     {
         Task<string?> RequestPaymentAsync(ulong reserveId);
+        Task<string> VerifyAsync(long payGateTranId, string refId);
     }
 }

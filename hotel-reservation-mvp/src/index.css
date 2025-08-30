@@ -8,3 +8,7 @@ html {
   font-family: 'Vazirmatn', sans-serif;
   direction: rtl;
 }
+
+.Toastify__toast {
+  font-family: 'Vazirmatn', 'Cairo', 'Tajawal', 'Arial', sans-serif !important;
+}
