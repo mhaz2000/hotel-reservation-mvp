@@ -12,6 +12,7 @@ namespace HotelReservationMVP.Server.Application.Services.Voucher
             var pc = new PersianCalendar();
             var signImagePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\statics\\sign.png";
             var logoImagePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\statics\\IranHotelLogo.png";
+            string fontPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\statics\\fonts\\Vazirmatn-Regular.ttf";
 
             string html = @"
             <html lang=""en"">
@@ -22,6 +23,12 @@ namespace HotelReservationMVP.Server.Application.Services.Voucher
                 <title>Document</title>
             
                 <style>
+                     @font-face {{
+                          font-family: 'Vazirmatn';
+                          src: url('file:///{fontPath}') format('ttf');
+                          font-weight: normal;
+                          font-style: normal;
+                        }}
                     body {
                         direction: rtl !important;
                         font-family: 'Vazirmatn', sans-serif;

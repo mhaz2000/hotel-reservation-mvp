@@ -19,11 +19,11 @@ export default function HotelSearchResults({ hotels, startDate, endDate }: Searc
     }
 
     if (!hotels.length) {
-        return <p className="mt-20 lg:mt-6 text-center text-gray-500">نتیجه‌ای یافت نشد</p>;
+        return <p className="mt-48 lg:mt-20 text-center text-gray-500">نتیجه‌ای یافت نشد</p>;
     }
 
     return (
-        <div className="mt-20 lg:mt-8 space-y-6">
+        <div className="mt-48 lg:mt-20 space-y-6">
             {hotels.map((hotel) => {
                 return (
                     <div

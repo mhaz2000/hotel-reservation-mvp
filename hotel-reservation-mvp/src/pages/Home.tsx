@@ -1,5 +1,4 @@
 import { Search, Calendar, MapPin, Clock } from "lucide-react";
-import headerImage from "../assets/Header-Site.jpg";
 import CitySearchInput from "../components/hotel/CityOrLocationInput";
 import JalaliRangePicker from "../components/ui/JalaliRangePicker";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -109,14 +108,14 @@ export default function Home() {
 
   return (
     <div className="rtl relative">
-      <img
+      {/* <img
         src={headerImage}
         alt="Header"
         className="w-full h-[480px] object-cover"
-      />
+      /> */}
 
       {/* Search Panel */}
-      <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-6xl bg-white rounded-3xl shadow-lg p-6 flex flex-wrap justify-between gap-3 lg:gap-0">
+      <div className="mt-16 absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-6xl bg-white rounded-3xl shadow-lg p-6 flex flex-wrap justify-between gap-3 lg:gap-0 lg:mt-4">
         {/* Destination */}
         <div className="flex flex-col w-full lg:w-1/2 xl:w-2/5">
           <div

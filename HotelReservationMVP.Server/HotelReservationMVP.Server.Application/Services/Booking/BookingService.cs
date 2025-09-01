@@ -26,7 +26,7 @@ namespace HotelReservationMVP.Server.Application.Services.Booking
 
         public async Task<MemoryStream> DownloadVoucherAsync(ulong reserveId)
         {
-            var reservation = await _repository.GetAsync(c => c.ReserveId == reserveId, c=> c.Include(t=>t.Rooms));
+            var reservation = await _repository.GetAsync(c => c.ReserveId == reserveId, c => c.Include(t => t.Rooms));
 
             return _voucherService.GetVoucher(reservation);
         }
@@ -87,7 +87,9 @@ namespace HotelReservationMVP.Server.Application.Services.Booking
                     await _repository.UpdateAsync(reservation);
                 }
 
-                return updatedReservations.Select(r => r.ToDto());
+                return updatedReservations
+                    .Where(t => t.Status == ReservationStatus.WaitingForHotelApproval || t.Status == ReservationStatus.WaitingForPayment)
+                    .Select(r => r.ToDto());
             }
 
             return null;

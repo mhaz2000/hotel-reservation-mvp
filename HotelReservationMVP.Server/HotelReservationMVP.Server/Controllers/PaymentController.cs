@@ -11,10 +11,12 @@ namespace HotelReservationMVP.Server.API.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
+        private readonly IConfiguration _configuration;
 
-        public PaymentController(IPaymentService paymentService)
+        public PaymentController(IPaymentService paymentService, IConfiguration configuration)
         {
             _paymentService = paymentService;
+            _configuration = configuration;
         }
 
         [HttpPost("request/{reserveId}")]
@@ -26,13 +28,31 @@ namespace HotelReservationMVP.Server.API.Controllers
         }
 
         [HttpPost("verify")]
-        public async Task<IActionResult> Test([FromForm] PaymentCallbackCommand command)
+        public async Task<IActionResult> Verify([FromForm] object command)
         {
-            var formValues = Request.Form
-        .ToDictionary(k => k.Key, v => v.Value.ToString());
+            //var formValues = Request.Form
+            //        .ToDictionary(k => k.Key, v => v.Value.ToString());
 
-            string result = await _paymentService.VerifyAsync(command.PayGateTranId, command.RefId);
-            return Redirect("/mammad");
+            //// Convert dictionary to lines
+            //var lines = formValues.Select(kvp => $"{kvp.Key}={kvp.Value}");
+
+            //// Define the file path (adjust path as needed)
+            //var filePath = Path.Combine(Directory.GetCurrentDirectory(), "callback_log.txt");
+
+            //// Ensure directory exists (if you want to save in a subfolder)
+            //// Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+            //// Append lines to file (creates file if it doesn't exist)
+            //await System.IO.File.AppendAllLinesAsync(filePath, lines);
+
+            //string result = await _paymentService.VerifyAsync(command.PayGateTranId, command.RefId);
+            return Redirect(_configuration["AsanPardakht:ClientCallbackUrl"]!);
+        }
+
+        [HttpGet("Status")]
+        public async Task<IActionResult> PaymentStatus()
+        {
+            return Ok(await _paymentService.GetPaymentStatusAsync());
         }
     }
 }

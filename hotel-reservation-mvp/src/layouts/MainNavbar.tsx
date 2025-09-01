@@ -1,7 +1,6 @@
 // src/components/MainNavbar.tsx
 import { Link } from "react-router-dom";
-import { Calendar } from "lucide-react";
-import brandLogo from "../assets/brand-logo.png";
+import { Calendar, RefreshCcw } from "lucide-react";
 
 export default function MainNavbar() {
   return (
@@ -9,11 +8,7 @@ export default function MainNavbar() {
       <div className="container mx-auto flex items-center justify-between py-2 px-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <img
-            src={brandLogo}
-            alt="رزرو هتل"
-            className="h-16 w-auto object-contain"
-          />
+          <RefreshCcw size={50} className="text-black" />
         </Link>
 
         {/* Auth Links */}
