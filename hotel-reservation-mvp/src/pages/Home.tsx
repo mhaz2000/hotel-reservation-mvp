@@ -176,6 +176,7 @@ export default function Home() {
       {/* Results Section */}
       <div className="max-w-6xl mx-auto mt-16 p-4">
         <HotelSearchResults
+          loading={loading}
           hotels={hotels}
           startDate={dates && dates?.length > 1 ? dates[0].convert(persian, persian_en).format("YYYY/MM/DD") : ""}
           endDate={dates && dates?.length > 1 ? dates[1].convert(persian, persian_en).format("YYYY/MM/DD") : ""}

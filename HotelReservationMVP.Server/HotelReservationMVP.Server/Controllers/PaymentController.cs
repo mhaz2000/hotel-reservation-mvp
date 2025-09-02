@@ -27,32 +27,17 @@ namespace HotelReservationMVP.Server.API.Controllers
             return string.IsNullOrEmpty(result) ? BadRequest("در فرایند دریافت توکن خطایی پیش آمده است.") : Ok(result);
         }
 
-        [HttpPost("verify")]
-        public async Task<IActionResult> Verify([FromForm] object command)
+        [HttpPost("verify/{invoiceId}")]
+        public async Task<IActionResult> Verify([FromRoute] long invoiceId)
         {
-            //var formValues = Request.Form
-            //        .ToDictionary(k => k.Key, v => v.Value.ToString());
-
-            //// Convert dictionary to lines
-            //var lines = formValues.Select(kvp => $"{kvp.Key}={kvp.Value}");
-
-            //// Define the file path (adjust path as needed)
-            //var filePath = Path.Combine(Directory.GetCurrentDirectory(), "callback_log.txt");
-
-            //// Ensure directory exists (if you want to save in a subfolder)
-            //// Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-
-            //// Append lines to file (creates file if it doesn't exist)
-            //await System.IO.File.AppendAllLinesAsync(filePath, lines);
-
-            //string result = await _paymentService.VerifyAsync(command.PayGateTranId, command.RefId);
-            return Redirect(_configuration["AsanPardakht:ClientCallbackUrl"]!);
+            await _paymentService.VerifyAsync(invoiceId);
+            return Redirect(_configuration["AsanPardakht:ClientCallbackUrl"]! + $"/{invoiceId}");
         }
 
-        [HttpGet("Status")]
-        public async Task<IActionResult> PaymentStatus()
+        [HttpGet("Status/{invoiceId}")]
+        public async Task<IActionResult> PaymentStatus(long invoiceId)
         {
-            return Ok(await _paymentService.GetPaymentStatusAsync());
+            return Ok(await _paymentService.GetPaymentStatusAsync(invoiceId));
         }
     }
 }

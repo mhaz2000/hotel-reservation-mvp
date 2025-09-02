@@ -38,7 +38,10 @@ namespace HotelReservationMVP.Server.Application.Providers
 
         public async Task<TokenResponse> GetTokenAsync(TokenRequest request)
         {
-            request.callbackURL = _callbackUrl;
+            //for test
+            request.amountInRials = 10000;
+
+            request.callbackURL = _callbackUrl+$"/{request.localInvoiceId}";
             request.merchantConfigurationId = int.Parse(_merchantConfigId);
 
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
@@ -55,22 +58,27 @@ namespace HotelReservationMVP.Server.Application.Providers
             return new TokenResponse { ResCode = (int)response.StatusCode, ResMessage = response.ReasonPhrase };
         }
 
-        public async Task<VerifyResponse> VerifyAsync(VerifyRequest request)
+        public async Task<VerifyResponse> VerifyAsync(long invoiceId)
         {
-            request.merchantConfigurationId = int.Parse(_merchantConfigId);
-
-            var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("v1/Verify", content);
+            var response = await _client.GetAsync($"v1/TranResult?localInvoiceId={invoiceId}&merchantConfigurationId={int.Parse(_merchantConfigId)}");
 
             if (response.IsSuccessStatusCode)
             {
-                return new VerifyResponse { ResCode = 0, ResMessage = "Verification succeeded" };
+                var content = await response.Content.ReadAsStringAsync();
+
+                var verifyResponse = JsonConvert.DeserializeObject<VerifyResponse>(content);
+                verifyResponse.ResCode = 0;
+                verifyResponse.ResMessage = response.ReasonPhrase;
+
+                return verifyResponse;
             }
 
             return new VerifyResponse { ResCode = (int)response.StatusCode, ResMessage = response.ReasonPhrase };
         }
         public async Task<VerifyResponse> SettleAsync(VerifyRequest request)
         {
+            request.merchantConfigurationId = int.Parse(_merchantConfigId);
+
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             var response = await _client.PostAsync("v1/Settle", content);
 

@@ -4,8 +4,8 @@ namespace HotelReservationMVP.Server.Application.Services.Payments
 {
     public interface IPaymentService
     {
-        Task<PaymentStatusDto> GetPaymentStatusAsync();
+        Task<PaymentStatusDto> GetPaymentStatusAsync(long invoiceId);
         Task<string?> RequestPaymentAsync(ulong reserveId);
-        Task<string> VerifyAsync(long payGateTranId, string refId);
+        Task VerifyAsync(long invoiceId);
     }
 }

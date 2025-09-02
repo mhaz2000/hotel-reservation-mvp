@@ -8,7 +8,7 @@ export default function MainNavbar() {
       <div className="container mx-auto flex items-center justify-between py-2 px-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <RefreshCcw size={50} className="text-black" />
+          <RefreshCcw size={20} className="text-black" />
         </Link>
 
         {/* Auth Links */}

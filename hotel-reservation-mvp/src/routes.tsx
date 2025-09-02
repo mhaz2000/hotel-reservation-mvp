@@ -16,7 +16,7 @@ const routes: RouteObject[] = [
             { path: 'hotel', element: <HotelPage /> },
             { path: 'hotel/reservation', element: <ReservationPage /> },
             { path: 'reservation-history', element: <ReservationHistory /> },
-            { path: 'payment-verify', element: <PaymentVerificationPage /> },
+            { path: 'payment-verify/:invoiceId', element: <PaymentVerificationPage /> },
         ],
     },
     {

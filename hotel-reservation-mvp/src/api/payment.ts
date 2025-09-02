@@ -5,7 +5,7 @@ export const requestPayment = async (reserveId: string): Promise<string> => {
   return data;
 }
 
-export const PaymentStatus = async (): Promise<{isSuccess: boolean}> => {
-  const { data } = await authorizedAxios.get<{isSuccess: boolean}>(`Payment/Status`);
+export const PaymentStatus = async (id:string): Promise<{isSuccess: boolean, rrn: string, amount:number}> => {
+  const { data } = await authorizedAxios.get<{isSuccess: boolean, rrn: string, amount:number}>(`Payment/Status/${id}`);
   return data;
 }

@@ -12,18 +12,33 @@ namespace HotelReservationMVP.Server.Application.Services.Payments
     {
         private readonly IReservationRepository _reservationRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly ITransactionDetailRepository _transactionDetailRepository;
         private readonly IAsanPardakhtService _asanPardakhtService;
 
-        public PaymentService(IReservationRepository reservationRepository, IAsanPardakhtService asanPardakhtService, ITransactionRepository transactionRepository)
+        public PaymentService(IReservationRepository reservationRepository, ITransactionDetailRepository transactionDetailRepository,
+            IAsanPardakhtService asanPardakhtService, ITransactionRepository transactionRepository)
         {
             _reservationRepository = reservationRepository;
             _asanPardakhtService = asanPardakhtService;
             _transactionRepository = transactionRepository;
+            _transactionDetailRepository = transactionDetailRepository;
         }
 
-        public async Task<PaymentStatusDto> GetPaymentStatusAsync()
+        public async Task<PaymentStatusDto> GetPaymentStatusAsync(long invoiceId)
         {
-            return await Task.FromResult(new PaymentStatusDto() { IsSuccess =  true });
+            var transaction = await _transactionRepository.GetAsync(c => c.LocalId == invoiceId, t => t.Include(r => r.TransactionDetail));
+            if (transaction.Status == TransactionStatus.Failed)
+                return new PaymentStatusDto()
+                {
+                    IsSuccess = false
+                };
+            else
+                return new PaymentStatusDto()
+                {
+                    IsSuccess = true,
+                    Amount = transaction.TransactionDetail.Amount,
+                    Rrn = transaction.TransactionDetail.Rrn,
+                };
         }
 
         public async Task<string?> RequestPaymentAsync(ulong reserveId)
@@ -65,23 +80,37 @@ namespace HotelReservationMVP.Server.Application.Services.Payments
             return redirectUrl;
         }
 
-        public async Task<string> VerifyAsync(long payGateTranId, string refId)
+        public async Task VerifyAsync(long invoiceId)
         {
-            var transaction = await _transactionRepository.GetAsync(c => c.RefId == refId);
+            var transaction = await _transactionRepository.GetAsync(c => c.LocalId == invoiceId);
 
-            var verifyCommand = new VerifyRequest
+            var verifyResult = await _asanPardakhtService.VerifyAsync(invoiceId);
+            var transactionDetail = new TransactionDetail()
             {
-                payGateTranId = payGateTranId
+                Amount = verifyResult.Amount,
+                CardNumber = verifyResult.CardNumber,
+                PayGateTranID = verifyResult.PayGateTranID,
+                RefId = verifyResult.RefId,
+                ResCode = verifyResult.ResCode,
+                Rrn = verifyResult.Rrn,
+                ResMessage = verifyResult.ResMessage
             };
-            var verifyResult = await _asanPardakhtService.VerifyAsync(verifyCommand);
 
-            transaction.Status = TransactionStatus.PaidVerfied;
+            if (verifyResult.ResCode == 0)
+            {
+                var settlementResult = await _asanPardakhtService.SettleAsync(new VerifyRequest() { payGateTranId = verifyResult.PayGateTranID.Value, merchantConfigurationId = 0 });
+                if(settlementResult.ResCode != 0)
+                    transaction.Status = TransactionStatus.Failed;
+
+                transaction.Status = TransactionStatus.PaidVerfied;
+            }
+            else
+                transaction.Status = TransactionStatus.Failed;
+
+            await _transactionDetailRepository.AddAsync(transactionDetail);
+
+            transaction.TransactionDetail = transactionDetail;
             await _transactionRepository.UpdateAsync(transaction);
-
-            // (3) Redirect browser to frontend
-            var redirectUrl = $"https://site.ir/payment-result?status={(verifyResult.ResCode == 0 ? "success" : "failed")}&invoice={""}";
-
-            return redirectUrl;
         }
     }
 }

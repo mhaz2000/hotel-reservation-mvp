@@ -3,6 +3,7 @@ using System;
 using HotelReservationMVP.Server.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelReservationMVP.Server.Infrastructure.Migrations
 {
     [DbContext(typeof(HotelReservationDbContext))]
-    partial class HotelReservationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250902074455_transaction-detail-added")]
+    partial class transactiondetailadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.19");
@@ -159,7 +162,7 @@ namespace HotelReservationMVP.Server.Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid?>("TransactionDetailId")
+                    b.Property<Guid>("TransactionDetailId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -222,7 +225,8 @@ namespace HotelReservationMVP.Server.Infrastructure.Migrations
                     b.HasOne("HotelReservationMVP.Server.Core.Entities.TransactionDetail", "TransactionDetail")
                         .WithOne()
                         .HasForeignKey("HotelReservationMVP.Server.Core.Entities.Transaction", "TransactionDetailId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("TransactionDetail");
                 });
