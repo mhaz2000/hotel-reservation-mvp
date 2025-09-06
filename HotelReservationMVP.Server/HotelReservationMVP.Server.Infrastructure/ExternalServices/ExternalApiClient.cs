@@ -135,17 +135,27 @@ public class ExternalApiClient : IExternalApiClient
 
     public async Task<FinalizeBookModel> FinalizeBookAsync(ulong reserveId)
     {
-        var response = await _httpClient.PostAsync($"payment/Book/{reserveId}", null);
-        if (response.IsSuccessStatusCode)
-            return await response.Content.ReadFromJsonAsync<FinalizeBookModel>();
-
-        var error = await response.Content.ReadFromJsonAsync<ApiError>();
-
-        return new FinalizeBookModel
+        try
         {
-            Id = reserveId,
-            IsFinalized = false,
-            PriceToPay = 0,
-        };
+            var response = await _httpClient.PostAsync($"payment/Book/{reserveId}", null);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadFromJsonAsync<FinalizeBookModel>();
+            else
+                return new FinalizeBookModel
+                {
+                    Id = reserveId,
+                    IsFinalized = false,
+                    PriceToPay = 0,
+                };
+        }
+        catch (Exception e)
+        {
+            return new FinalizeBookModel
+            {
+                Id = reserveId,
+                IsFinalized = false,
+                PriceToPay = 0,
+            };
+        }
     }
 }

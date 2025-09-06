@@ -39,9 +39,6 @@ namespace HotelReservationMVP.Server.Application.Providers
 
         public async Task<TokenResponse> GetTokenAsync(TokenRequest request)
         {
-            //for test
-            request.amountInRials = 10000;
-
             request.callbackURL = _callbackUrl+$"/{request.localInvoiceId}";
             request.merchantConfigurationId = int.Parse(_merchantConfigId);
 
