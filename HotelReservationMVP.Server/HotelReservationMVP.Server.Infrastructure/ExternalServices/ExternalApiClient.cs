@@ -140,6 +140,12 @@ public class ExternalApiClient : IExternalApiClient
             return await response.Content.ReadFromJsonAsync<FinalizeBookModel>();
 
         var error = await response.Content.ReadFromJsonAsync<ApiError>();
-        throw new InvalidOperationException(error?.Message ?? "خطای نامشخص در پرداخت");
+
+        return new FinalizeBookModel
+        {
+            Id = reserveId,
+            IsFinalized = false,
+            PriceToPay = 0,
+        };
     }
 }

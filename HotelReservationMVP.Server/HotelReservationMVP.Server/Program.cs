@@ -42,6 +42,7 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAsanPardakhtService, AsanPardakhtService>();
 
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ITransactionDetailRepository, TransactionDetailRepository>();
 

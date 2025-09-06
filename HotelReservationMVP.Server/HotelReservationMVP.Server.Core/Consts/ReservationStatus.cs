@@ -11,6 +11,8 @@ namespace HotelReservationMVP.Server.Core.Consts
         [Description("رزرو ناموفق")]
         Reject,
         [Description("رزرو قطعی")]
-        Reserved
+        Reserved,
+        [Description("پرداخت شده با خطا، با پشتیبانی تماس حاصل فرمایید.")]
+        PaidButReject,
     }
 }

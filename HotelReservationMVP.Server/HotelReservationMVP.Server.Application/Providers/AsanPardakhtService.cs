@@ -1,4 +1,5 @@
 ﻿using HotelReservationMVP.Server.Application.Providers.Models;
+using HotelReservationMVP.Server.Core.Repositories;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -9,18 +10,18 @@ namespace HotelReservationMVP.Server.Application.Providers
     public class AsanPardakhtService : IAsanPardakhtService
     {
         private readonly HttpClient _client;
-        private readonly string _merchantId;
         private readonly string _password;
         private readonly string _merchantConfigId;
         private readonly string _username;
-
         private readonly string _callbackUrl;
 
-        public AsanPardakhtService(IConfiguration config)
+        private readonly ILogRepository _logRepository;
+
+        public AsanPardakhtService(IConfiguration config, ILogRepository logRepository)
         {
+            _logRepository = logRepository;
             var baseUrl = config["AsanPardakht:RestUrl"]!;
             //var baseUrl = "http://194.41.51.43:81/";
-            _merchantId = config["AsanPardakht:MerchantId"]!;
             _username = config["AsanPardakht:Username"]!;
             _password = config["AsanPardakht:Password"]!;
             _merchantConfigId = config["AsanPardakht:MerchantConfigId"]!;
@@ -58,7 +59,7 @@ namespace HotelReservationMVP.Server.Application.Providers
             return new TokenResponse { ResCode = (int)response.StatusCode, ResMessage = response.ReasonPhrase };
         }
 
-        public async Task<VerifyResponse> VerifyAsync(long invoiceId)
+        public async Task<VerifyResponse> TransactionResultAsync(long invoiceId)
         {
             var response = await _client.GetAsync($"v1/TranResult?localInvoiceId={invoiceId}&merchantConfigurationId={int.Parse(_merchantConfigId)}");
 
@@ -72,23 +73,46 @@ namespace HotelReservationMVP.Server.Application.Providers
 
                 return verifyResponse;
             }
+            else
+                await _logRepository.AddAsync(new Core.Entities.Log() { Content = await response.Content.ReadAsStringAsync() });
+
 
             return new VerifyResponse { ResCode = (int)response.StatusCode, ResMessage = response.ReasonPhrase };
         }
-        public async Task<VerifyResponse> SettleAsync(VerifyRequest request)
+
+
+        public async Task<VerifyResponse> VerifyAsync(VerifyRequest request)
         {
             request.merchantConfigurationId = int.Parse(_merchantConfigId);
 
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("v1/Settle", content);
+            var response = await _client.PostAsync("v1/Verify", content);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode || response.StatusCode.GetHashCode() == 472)
             {
-                return new VerifyResponse { ResCode = 0, ResMessage = "Settlement succeeded" };
+                return new VerifyResponse { ResCode = 0, ResMessage = "Verfication succeeded" };
             }
+            else
+                await _logRepository.AddAsync(new Core.Entities.Log() { Content = await response.Content.ReadAsStringAsync() });
 
             return new VerifyResponse { ResCode = (int)response.StatusCode, ResMessage = response.ReasonPhrase };
         }
+        //public async Task<VerifyResponse> SettleAsync(VerifyRequest request)
+        //{
+        //    request.merchantConfigurationId = int.Parse(_merchantConfigId);
+
+        //    var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+        //    var response = await _client.PostAsync("v1/Settle", content);
+
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        return new VerifyResponse { ResCode = 0, ResMessage = "Settlement succeeded" };
+        //    }
+        //    else
+        //        await _logRepository.AddAsync(new Core.Entities.Log() { Content = await response.Content.ReadAsStringAsync() });
+
+        //    return new VerifyResponse { ResCode = (int)response.StatusCode, ResMessage = response.ReasonPhrase };
+        //}
 
     }
 }

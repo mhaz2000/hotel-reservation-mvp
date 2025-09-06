@@ -42,21 +42,6 @@ namespace HotelReservationMVP.Server.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("FinalizeBook/{reserveId}")]
-        public async Task<IActionResult> FinalizeBook([FromRoute] ulong reserveId)
-        {
-            try
-            {
-                var result = await _bookingService.FinalizeBookAsync(reserveId);
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-
-                return BadRequest(e.Message);
-            }
-        }
-
         [HttpGet("DownloadVoucher/{reserveId}")]
         public async Task<IActionResult> Print([FromRoute] ulong reserveId)
         {

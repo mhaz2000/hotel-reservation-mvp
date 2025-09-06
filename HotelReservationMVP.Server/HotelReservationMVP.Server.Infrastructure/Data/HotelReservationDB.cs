@@ -11,6 +11,7 @@ namespace HotelReservationMVP.Server.Infrastructure.Data
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<ReservingRoom> Rooms { get; set; }
         public DbSet<TransactionDetail> TransactionDetails { get; set; }
+        public DbSet<Log> Logs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Reservation>()

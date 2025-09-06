@@ -2,5 +2,5 @@
 
 namespace HotelReservationMVP.Server.Core.Repositories
 {
-    public interface IReservationRepository : IRepository<Reservation>;
+    public interface ILogRepository : IRepository<Log>;
 }

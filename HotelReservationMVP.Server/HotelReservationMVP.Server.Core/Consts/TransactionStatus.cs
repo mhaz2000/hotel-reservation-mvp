@@ -4,7 +4,6 @@
     {
         Pending,
         PaidVerfied,
-        Verfied,
         Failed
     }
 }

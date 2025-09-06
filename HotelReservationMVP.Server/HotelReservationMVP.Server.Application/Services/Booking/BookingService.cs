@@ -31,20 +31,6 @@ namespace HotelReservationMVP.Server.Application.Services.Booking
             return _voucherService.GetVoucher(reservation);
         }
 
-        public async Task<FinalizeBookModel> FinalizeBookAsync(ulong reserveId)
-        {
-
-            var result = await _externalApiClient.FinalizeBookAsync(reserveId);
-
-            var reservation = await _repository.GetAsync(c => c.ReserveId == reserveId);
-            reservation.Status = ReservationStatus.Reserved;
-
-            await _repository.UpdateAsync(reservation);
-
-            return result;
-
-        }
-
         public async Task<IEnumerable<ReservesHistoryDto>> GetReservesHistoryAsync(string type, string mobile)
         {
             var reservations = _repository.GetMany(c => c.Mobile == mobile, r => r.Include(t => t.Rooms));

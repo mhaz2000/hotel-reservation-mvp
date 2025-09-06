@@ -3,6 +3,7 @@ using HotelReservationMVP.Server.Application.Providers;
 using HotelReservationMVP.Server.Application.Providers.Models;
 using HotelReservationMVP.Server.Core.Consts;
 using HotelReservationMVP.Server.Core.Entities;
+using HotelReservationMVP.Server.Core.ExternalServices;
 using HotelReservationMVP.Server.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,14 +15,17 @@ namespace HotelReservationMVP.Server.Application.Services.Payments
         private readonly ITransactionRepository _transactionRepository;
         private readonly ITransactionDetailRepository _transactionDetailRepository;
         private readonly IAsanPardakhtService _asanPardakhtService;
+        private readonly IExternalApiClient _externalApiClient;
+
 
         public PaymentService(IReservationRepository reservationRepository, ITransactionDetailRepository transactionDetailRepository,
-            IAsanPardakhtService asanPardakhtService, ITransactionRepository transactionRepository)
+            IAsanPardakhtService asanPardakhtService, ITransactionRepository transactionRepository, IExternalApiClient externalApiClient)
         {
             _reservationRepository = reservationRepository;
             _asanPardakhtService = asanPardakhtService;
             _transactionRepository = transactionRepository;
             _transactionDetailRepository = transactionDetailRepository;
+            _externalApiClient = externalApiClient;
         }
 
         public async Task<PaymentStatusDto> GetPaymentStatusAsync(long invoiceId)
@@ -84,7 +88,7 @@ namespace HotelReservationMVP.Server.Application.Services.Payments
         {
             var transaction = await _transactionRepository.GetAsync(c => c.LocalId == invoiceId);
 
-            var verifyResult = await _asanPardakhtService.VerifyAsync(invoiceId);
+            var verifyResult = await _asanPardakhtService.TransactionResultAsync(invoiceId);
             var transactionDetail = new TransactionDetail()
             {
                 Amount = verifyResult.Amount,
@@ -98,11 +102,22 @@ namespace HotelReservationMVP.Server.Application.Services.Payments
 
             if (verifyResult.ResCode == 0)
             {
-                var settlementResult = await _asanPardakhtService.SettleAsync(new VerifyRequest() { payGateTranId = verifyResult.PayGateTranID.Value, merchantConfigurationId = 0 });
-                if(settlementResult.ResCode != 0)
+                var verificationResult = await _asanPardakhtService.VerifyAsync(new VerifyRequest() { payGateTranId = verifyResult.PayGateTranID.Value, merchantConfigurationId = 0 });
+                if (verificationResult.ResCode != 0)
                     transaction.Status = TransactionStatus.Failed;
+                else
+                {
+                    //var settlementResult = await _asanPardakhtService.SettleAsync(new VerifyRequest() { payGateTranId = verifyResult.PayGateTranID.Value, merchantConfigurationId = 0 });
 
-                transaction.Status = TransactionStatus.PaidVerfied;
+                    transaction.Status = TransactionStatus.PaidVerfied;
+                    var result = await _externalApiClient.FinalizeBookAsync(transaction.ReserveId);
+                    var reservation = await _reservationRepository.GetAsync(r => r.ReserveId == transaction.ReserveId);
+                    if (!result.IsFinalized)
+                        reservation.Status = ReservationStatus.PaidButReject;
+                    else
+                        reservation.Status = ReservationStatus.Reserved;
+                }
+
             }
             else
                 transaction.Status = TransactionStatus.Failed;
