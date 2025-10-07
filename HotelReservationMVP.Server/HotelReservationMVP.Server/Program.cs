@@ -20,16 +20,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<HotelReservationDbContext>(options =>
-    options.UseSqlite("Data Source=reservation_hotel.db"));
+    options.UseSqlite(builder.Configuration.GetConnectionString("Main")));
 
 // Configure the HTTP request pipeline.
 builder.Services.AddMemoryCache();
 
 builder.Services.AddHttpClient<IExternalApiClient, ExternalApiClient>(client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["IranHotelURL"]!); // your base
-    //client.BaseAddress = new Uri("https://www.iranhotelonline.com/api/app/v1/"); // your base
-    //client.BaseAddress = new Uri("http://194.41.51.43/api/app/v1/"); // your base
+    client.BaseAddress = new Uri(builder.Configuration["IranHotelURL"]!);
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
