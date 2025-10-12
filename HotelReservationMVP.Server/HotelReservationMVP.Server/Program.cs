@@ -1,3 +1,4 @@
+using HotelReservationMVP.Server.API.BackgroundJobs;
 using HotelReservationMVP.Server.API.Middlewares;
 using HotelReservationMVP.Server.Application.Providers;
 using HotelReservationMVP.Server.Application.Services.Booking;
@@ -43,6 +44,7 @@ builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ITransactionDetailRepository, TransactionDetailRepository>();
+builder.Services.AddHostedService<DatabaseBackupService>();
 
 builder.Services.AddCors(options =>
 {
