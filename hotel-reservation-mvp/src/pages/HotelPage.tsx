@@ -7,6 +7,7 @@ import type { HotelSummary } from "../types/hotelSummary";
 import { getHotelSummary } from "../api/hotel";
 import HotelSummaryInfo from "../components/hotel/HotelSummaryInfo";
 import type { HotelRoom, InBasketRoom } from "../types/hotelDetail";
+import BackButton from "../components/ui/BackButton";
 
 export default function HotelPage() {
     const [selectedRooms, setSelectedRooms] = useState<InBasketRoom[]>([]);
@@ -75,27 +76,32 @@ export default function HotelPage() {
     };
 
     return (
-        <div className="max-w-7xl mx-auto mt-8 p-4 grid grid-cols-3 gap-6">
-            <div className="col-span-3">
-                <HotelSummaryHeader summary={summary} />
+        <div className="mt-8">
+            <div className="w-full flex justify-end p-4">
+                <BackButton />
             </div>
-            <div className="col-span-3 lg:col-span-2 ">
-                <HotelSummaryInfo summary={summary} />
-                <HotelRoomSelection
-                    onIncrementRoom={handleIncrementRoom}
-                    onDecrementRoom={handleDecrementRoom}
-                    selectedRooms={selectedRooms}
-                />
-            </div>
-            <div className="col-span-3 lg:col-span-1">
-                <Basket
-                    selectedRooms={selectedRooms}
-                    onRemoveRoom={(index) =>
-                        setSelectedRooms((prev) =>
-                            prev.filter((_, i) => i !== index)
-                        )
-                    }
-                />
+            <div className="max-w-7xl mx-auto p-4 grid grid-cols-3 gap-6">
+                <div className="col-span-3">
+                    <HotelSummaryHeader summary={summary} />
+                </div>
+                <div className="col-span-3 lg:col-span-2 ">
+                    <HotelSummaryInfo summary={summary} />
+                    <HotelRoomSelection
+                        onIncrementRoom={handleIncrementRoom}
+                        onDecrementRoom={handleDecrementRoom}
+                        selectedRooms={selectedRooms}
+                    />
+                </div>
+                <div className="col-span-3 lg:col-span-1">
+                    <Basket
+                        selectedRooms={selectedRooms}
+                        onRemoveRoom={(index) =>
+                            setSelectedRooms((prev) =>
+                                prev.filter((_, i) => i !== index)
+                            )
+                        }
+                    />
+                </div>
             </div>
         </div>
     );

@@ -19,7 +19,7 @@ export default function ReservationHistory() {
       case "failed":
         return <FailedReserves phone={submittedPhone} />;
       case "pending":
-        return <PendingReserves phone={submittedPhone} onPaid={() => setActiveTab('success')}/>;
+        return <PendingReserves phone={submittedPhone} onPaid={() => setActiveTab('success')} />;
       default:
         return null;
     }
@@ -28,7 +28,7 @@ export default function ReservationHistory() {
   return (
     <div className="w-full p-6">
       {/* Phone number input */}
-      <div className="mb-4 flex gap-2 justify-end">
+      <div className="mb-4 flex gap-2 justify-center flex-wrap md:justify-end">
         <input
           type="tel"
           placeholder="شماره موبایل"
@@ -48,31 +48,28 @@ export default function ReservationHistory() {
       <div className="flex border-b border-gray-300">
         <button
           onClick={() => setActiveTab("success")}
-          className={`px-4 py-2 text-sm font-medium ${
-            activeTab === "success"
+          className={`px-4 py-2 text-sm font-medium ${activeTab === "success"
               ? "border-b-2 border-blue-500 text-blue-600"
               : "text-gray-600 hover:text-blue-500"
-          }`}
+            }`}
         >
           رزرو های موفق
         </button>
         <button
           onClick={() => setActiveTab("failed")}
-          className={`px-4 py-2 text-sm font-medium ${
-            activeTab === "failed"
+          className={`px-4 py-2 text-sm font-medium ${activeTab === "failed"
               ? "border-b-2 border-red-500 text-red-600"
               : "text-gray-600 hover:text-red-500"
-          }`}
+            }`}
         >
           رزرو های ناموفق
         </button>
         <button
           onClick={() => setActiveTab("pending")}
-          className={`px-4 py-2 text-sm font-medium ${
-            activeTab === "pending"
+          className={`px-4 py-2 text-sm font-medium ${activeTab === "pending"
               ? "border-b-2 border-yellow-500 text-yellow-600"
               : "text-gray-600 hover:text-yellow-500"
-          }`}
+            }`}
         >
           رزرو های در انتظار
         </button>
