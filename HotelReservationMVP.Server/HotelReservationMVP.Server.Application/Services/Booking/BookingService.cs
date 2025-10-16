@@ -31,6 +31,19 @@ namespace HotelReservationMVP.Server.Application.Services.Booking
             return _voucherService.GetVoucher(reservation);
         }
 
+        public async Task<ReservesHistoryDto> GetReservationDetailAsync(ulong reserveId)
+        {
+            var reservation = await _repository.GetAsync(t => t.ReserveId == reserveId, t=> t.Include(c=> c.Rooms));
+            return new ReservesHistoryDto()
+            {
+                HotelName = reservation.HotelName,
+                ReserveId = reserveId,
+                StartDate = reservation.ArrivalDate,
+                EndDate = reservation.CheckoutDate,
+                TotalAmount = reservation.Rooms.Sum(t=>t.RoomPrice)
+            };
+        }
+
         public async Task<IEnumerable<ReservesHistoryDto>> GetReservesHistoryAsync(string type, string mobile)
         {
             var reservations = _repository.GetMany(c => c.Mobile == mobile, r => r.Include(t => t.Rooms));

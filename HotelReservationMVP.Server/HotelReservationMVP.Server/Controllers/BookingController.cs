@@ -1,6 +1,7 @@
 ﻿using HotelReservationMVP.Server.Application.Commands;
 using HotelReservationMVP.Server.Application.Services.Booking;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace HotelReservationMVP.Server.API.Controllers
 {
@@ -48,5 +49,13 @@ namespace HotelReservationMVP.Server.API.Controllers
             var voucherFile = await _bookingService.DownloadVoucherAsync(reserveId);
             return File(voucherFile, "application/octet-stream", fileDownloadName: "voucher.pdf");
         }
+
+        [HttpGet("ReservationDetail/{reserveId}")]
+        public async Task<IActionResult> GetReservationDetail([FromRoute] ulong reserveId)
+        {
+            var result = await _bookingService.GetReservationDetailAsync(reserveId);
+            return Ok(result);
+        }
+
     }
 }

@@ -5,7 +5,7 @@ import HotelPage from './pages/HotelPage';
 import ReservationPage from './pages/Reservation';
 import ReservationHistory from './pages/ReservationHistory';
 import PaymentVerificationPage from './pages/PaymentVerificationPage';
-
+import PrePaymentPage from './pages/PrePaymentPage';
 
 const routes: RouteObject[] = [
     {
@@ -16,9 +16,14 @@ const routes: RouteObject[] = [
             { path: 'hotel', element: <HotelPage /> },
             { path: 'hotel/reservation', element: <ReservationPage /> },
             { path: 'reservation-history', element: <ReservationHistory /> },
-            { path: 'payment-verify/:invoiceId', element: <PaymentVerificationPage /> },
         ],
     },
+
+    {
+        path: '/payment',
+        element: <PrePaymentPage />,
+    },
+    { path: 'payment-verify/:invoiceId', element: <PaymentVerificationPage /> },
     {
         path: '*',
         element: <></>,

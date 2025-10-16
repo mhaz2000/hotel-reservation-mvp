@@ -15,7 +15,7 @@ export default function Basket({ selectedRooms, onRemoveRoom }: BasketProps) {
     const navigate = useNavigate();
 
     const total = selectedRooms.reduce(
-        (sum, r) => sum + r.room.prices[0].nights[0].ihoPrice * r.quantity,
+        (sum, r) => sum + r.room.prices[0].nights.reduce((sum, night) => sum + night.ihoPrice, 0) * r.quantity,
         0
     );
 
@@ -31,7 +31,7 @@ export default function Basket({ selectedRooms, onRemoveRoom }: BasketProps) {
                     quantity: s.quantity,
                     image: s.room.gallery.length > 0 ? s.room.gallery[0].pictureUrl : '',
                     name: s.room.name,
-                    price: s.room.prices[0].nights[0].ihoPrice,
+                    price: s.room.prices[0].nights.reduce((sum, night) => sum + night.ihoPrice, 0),
                     id: s.room.id,
                 })),
                 startDate,
@@ -61,7 +61,7 @@ export default function Basket({ selectedRooms, onRemoveRoom }: BasketProps) {
                                         {toPersianDigits(room.quantity)}
                                     </p>
                                     <p className="text-sm text-gray-500">
-                                        {(room.room.prices[0].nights[0].ihoPrice * room.quantity).toLocaleString("fa-IR")} ریال
+                                        {(room.room.prices[0].nights.reduce((sum, night) => sum + night.ihoPrice, 0) * room.quantity).toLocaleString("fa-IR")} ریال
                                     </p>
                                 </div>
                                 <button

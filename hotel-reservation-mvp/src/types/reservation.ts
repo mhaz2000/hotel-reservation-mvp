@@ -31,3 +31,11 @@ export interface FinalizeBookResponse {
   priceToPay: number;
   isFinalized: boolean;
 }
+
+export interface PrePaymentInfo{
+    hotelName: string;
+    startDate: string;
+    endDate: string;
+    reserveId: string;
+    totalAmount: number;
+}

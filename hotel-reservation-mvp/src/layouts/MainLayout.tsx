@@ -4,10 +4,10 @@ import MainNavbar from "./MainNavbar";
 const MainLayout = () => {
 
     return (
-        <>
+        <div id="app">
             <MainNavbar />
             <Outlet />
-        </>
+        </div>
     );
 };
 

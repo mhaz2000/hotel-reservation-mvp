@@ -29,17 +29,22 @@ export default function ReservesDetail({ reservations }: ReservesDetailProps) {
     const handleConfirmPayment = async () => {
         if (!reservationToPay) return;
 
-        try {
-            // Call the API
-            var url = await requestPayment(reservationToPay.reserveId.toString());
+        const url = import.meta.env.VITE_API_BASE_URL as string;
+        if (url.includes('donyaseir'))
+            window.open(`/donyaseir/payment?reserveId=${reservationToPay.reserveId}`, "_blank");
 
-            window.location.href = url;
-        } catch (error: any) {
-            // Handle error and set message
-            const message =
-                error?.response?.data || error?.message || "خطای نامشخص در پرداخت";
-            setPaymentMessage({ isSuccess: false, message });
-        }
+        setIsDialogOpen(false)
+        // try {
+        //     // Call the API
+        //     var url = await requestPayment(reservationToPay.reserveId.toString());
+
+        //     window.location.href = url;
+        // } catch (error: any) {
+        //     // Handle error and set message
+        //     const message =
+        //         error?.response?.data || error?.message || "خطای نامشخص در پرداخت";
+        //     setPaymentMessage({ isSuccess: false, message });
+        // }
     };
 
 
