@@ -8,7 +8,6 @@ import { ReservationStatusBadge } from "./ReservationStatusBadge";
 import { Dialog } from "../ui/Dialog";
 import { useState } from "react";
 import { downloadVoucher } from "../../api/hotel";
-import { requestPayment } from "../../api/payment";
 
 interface ReservesDetailProps {
     reservations: ReservationHistory[];
@@ -24,27 +23,15 @@ function convertShamsiToGregorian(shamsiDate: any) {
 export default function ReservesDetail({ reservations }: ReservesDetailProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [reservationToPay, setReservationToPay] = useState<ReservationHistory | null>(null);
-    const [paymentMessage, setPaymentMessage] = useState<{ message: string, isSuccess: boolean } | null>(null)
 
     const handleConfirmPayment = async () => {
         if (!reservationToPay) return;
 
         const url = import.meta.env.VITE_API_BASE_URL as string;
         if (url.includes('donyaseir'))
-            window.open(`/donyaseir/payment?reserveId=${reservationToPay.reserveId}`, "_blank");
+            window.open(`/payment?reserveId=${reservationToPay.reserveId}`, "_blank");
 
         setIsDialogOpen(false)
-        // try {
-        //     // Call the API
-        //     var url = await requestPayment(reservationToPay.reserveId.toString());
-
-        //     window.location.href = url;
-        // } catch (error: any) {
-        //     // Handle error and set message
-        //     const message =
-        //         error?.response?.data || error?.message || "خطای نامشخص در پرداخت";
-        //     setPaymentMessage({ isSuccess: false, message });
-        // }
     };
 
 
@@ -219,7 +206,6 @@ export default function ReservesDetail({ reservations }: ReservesDetailProps) {
                 confirmText="بله، پرداخت"
                 cancelText="لغو"
                 destructive={false}
-                additionalMessage={paymentMessage ?? undefined}
             />
 
         </div>
