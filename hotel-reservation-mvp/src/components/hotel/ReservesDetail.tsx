@@ -27,9 +27,7 @@ export default function ReservesDetail({ reservations }: ReservesDetailProps) {
     const handleConfirmPayment = async () => {
         if (!reservationToPay) return;
 
-        const url = import.meta.env.VITE_API_BASE_URL as string;
-        if (url.includes('donyaseir'))
-            window.open(`/payment?reserveId=${reservationToPay.reserveId}`, "_blank");
+        window.open(`/payment?reserveId=${reservationToPay.reserveId}`, "_blank");
 
         setIsDialogOpen(false)
     };

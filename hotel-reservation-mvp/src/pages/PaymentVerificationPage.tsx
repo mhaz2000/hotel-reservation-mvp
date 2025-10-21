@@ -15,8 +15,10 @@ export default function PaymentVerificationPage() {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState<PaymentResult | null>(null);
 
-  // 🔹 Show logo if API base URL contains donyaseir
   const showLogo = (import.meta.env.VITE_API_BASE_URL as string).includes("donyaseir");
+  const redirectUrl = (import.meta.env.VITE_API_BASE_URL as string).includes("donyaseir") ?
+    "https://donyaseir.ir/travel/hotel/" : "https://sinaseir.ir/travel/hotel/"
+
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -41,7 +43,7 @@ export default function PaymentVerificationPage() {
       className="min-h-screen flex flex-col items-center justify-center bg-[#2F53A3] py-10 px-4"
     >
       {/* 🔹 Logo on top of the card */}
-      {showLogo && (
+      {showLogo ? (
         <div className="mb-16">
           <img
             src={logo}
@@ -49,7 +51,9 @@ export default function PaymentVerificationPage() {
             className="h-16 object-contain"
           />
         </div>
-      )}
+      ) : <div className="mb-16">
+        <h3 className="text-4xl font-bold text-white">سیناسیر</h3>
+      </div>}
 
       <div className="max-w-md w-full bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-200">
         {/* Header */}
@@ -89,12 +93,11 @@ export default function PaymentVerificationPage() {
                 با مراجعه به صفحه‌ی سوابق رزرو می‌توانید واچر خود را دانلود کنید.
               </p>
 
-              {/* 🔹 Forward to Donyaseir button */}
               <button
-                onClick={() => window.location.href = "https://donyaseir.ir/travel/hotel/"}
+                onClick={() => window.location.href = redirectUrl}
                 className="w-full mt-4 bg-[#28478B] hover:bg-[#5b81d5] transition-colors text-white py-3 rounded-xl text-base font-semibold"
               >
-                بازگشت 
+                بازگشت
               </button>
             </div>
           ) : (
@@ -107,7 +110,7 @@ export default function PaymentVerificationPage() {
 
               {/* 🔹 Forward to Donyaseir button even on failure */}
               <button
-                onClick={() => window.location.href = "https://donyaseir.ir/travel/hotel/"}
+                onClick={() => window.location.href = redirectUrl}
                 className="w-full mt-4 bg-[#28478B] hover:bg-[#5b81d5] transition-colors text-white py-3 rounded-xl text-base font-semibold"
               >
                 بازگشت

@@ -1,5 +1,6 @@
 ﻿using HotelReservationMVP.Server.Core.ExternalServices;
 using HotelReservationMVP.Server.Core.Models;
+using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -10,12 +11,12 @@ namespace HotelReservationMVP.Server.Infrastructure.ExternalServices;
 public class ExternalApiClient : IExternalApiClient
 {
     private readonly HttpClient _httpClient;
-    public ExternalApiClient(HttpClient httpClient)
+    public ExternalApiClient(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
 
         _httpClient.DefaultRequestHeaders.Authorization =
-           new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MDM1OTYiLCJGY21JZCI6IjAiLCJBcHBsaWNhdGlvblRva2VuSWQiOiIyOSIsIkFwcGxpY2F0aW9uSWQiOiIyOSIsIklzVGVzdCI6IkZhbHNlIiwiSXNJaG9DbGllbnQiOiJGYWxzZSIsIkV4cGlyZVRpbWUiOiI0LzYvMjAyNiAxMDoxNjo1MyBBTSIsInJvbGUiOiJBZ2VuY2llcyIsIm5iZiI6MTc0MzkyMjM4OCwiZXhwIjoxNzc2MDYyODEzLCJpYXQiOjE3NDM5MjIzODh9.PusbLr9xR3FCfVzQoaRbN4otGeP8uHTWaReSx81fY2g");
+           new AuthenticationHeaderValue("Bearer", configuration["IranHotelToken"]);
 
     }
 

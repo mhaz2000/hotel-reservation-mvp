@@ -14,7 +14,6 @@ const PrePaymentPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [paying, setPaying] = useState(false);
 
-  // 🔹 Check if current route contains "donyaseir"
   const showLogo = (import.meta.env.VITE_API_BASE_URL as string).includes("donyaseir");
 
   // 🔹 Load prepayment info
@@ -60,13 +59,17 @@ const PrePaymentPage = () => {
       className="min-h-screen flex flex-col items-center justify-center bg-[#2F53A3] py-10 px-4"
     >
       {/* 🔹 Logo on top of the card */}
-      {showLogo && (
+      {showLogo ? (
         <div className="mb-16">
           <img
             src={logo}
             alt="Donyaseir Logo"
             className="h-16 object-contain"
           />
+        </div>
+      ): (
+        <div className="mb-16">
+          <h3 className="text-4xl font-bold text-white">سیناسیر</h3>
         </div>
       )}
 
